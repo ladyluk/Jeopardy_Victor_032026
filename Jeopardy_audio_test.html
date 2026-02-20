@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello World</h1>
+    <!-- The audio file (e.g., sound.mp3) is in the same folder as this HTML file -->
+    <audio id="myAudio" src="audio\Lauv - I Like Me Better [Official Audio] - Lauv.mp3"></audio>
+
+    <button id="playPauseBtn" onclick="togglePlayPause()">Play</button>
+
+    <script>
+        const audio = document.getElementById('myAudio');
+        const btn = document.getElementById('playPauseBtn');
+
+        function togglePlayPause() {
+            if (audio.paused) {
+                audio.play();
+                btn.textContent = 'Pause';
+            } else {
+                audio.pause();
+                btn.textContent = 'Play';
+            }
+        }
+
+        // Keep button label correct if user uses other controls (e.g. audio ends)
+        audio.addEventListener('play', () => { btn.textContent = 'Pause'; });
+        audio.addEventListener('pause', () => { btn.textContent = 'Play'; });
+    </script>
+</body>
+</html>
