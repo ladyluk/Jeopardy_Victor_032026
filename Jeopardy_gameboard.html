@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="gameboard">
+    <header class="gameboard-header">
+        <div class="round-buttons">
+            <a href="/" class="round-btn">Home</a>
+            <a href="?round=jeopardy" class="round-btn">Jeopardy</a>
+            <a href="?round=double" class="round-btn">Double Jeopardy</a>
+            <a href="?round=vic" class="round-btn">Vic jeopardy</a>
+            <a href="/final" class="round-btn">Final Jeopardy</a>
+        </div>
+    </header>
+    <table>
+        <thead>
+            <tr>
+                <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+    </table>
+    <script>
+        (function () {
+            var roundKey = (function () {
+                var params = new URLSearchParams(window.location.search);
+                var round = params.get('round');
+                if (round === 'double') return 'double jeopardy';
+                if (round === 'vic') return 'Vic jeopardy';
+                return 'jeopardy';
+            })();
+
+            fetch('answers.json')
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    var categories = data.categories[roundKey];
+                    if (!categories) return;
+                    var categoryNames = Object.keys(categories);
+                    var firstCategory = categories[categoryNames[0]];
+                    var valueKeys = firstCategory ? Object.keys(firstCategory) : ['100', '200', '300', '400', '500'];
+
+                    var headers = document.querySelectorAll('body.gameboard thead th');
+                    headers.forEach(function (th, i) {
+                        th.textContent = categoryNames[i] || '';
+                    });
+
+                    var rows = document.querySelectorAll('body.gameboard tbody tr');
+                    valueKeys.forEach(function (valueKey, rowIndex) {
+                        var cells = rows[rowIndex] ? rows[rowIndex].querySelectorAll('td') : [];
+                        categoryNames.forEach(function (categoryName, colIndex) {
+                            if (cells[colIndex]) cells[colIndex].textContent = valueKey;
+                        });
+                        for (var j = categoryNames.length; j < cells.length; j++) {
+                            if (cells[j]) cells[j].textContent = '';
+                        }
+                    });
+                    for (var r = valueKeys.length; r < rows.length; r++) {
+                        var extraCells = rows[r].querySelectorAll('td');
+                        for (var c = 0; c < extraCells.length; c++) extraCells[c].textContent = '';
+                    }
+                })
+                .catch(function () { });
+        })();
+    </script>
+</body>
+</html>

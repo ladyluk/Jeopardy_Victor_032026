@@ -1,0 +1,178 @@
+html, body {
+    min-height: 100vh;
+    margin: 0;
+}
+
+body {
+    position: relative;
+    background-image: url('../images/Jeopardy-season-36-open.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+body.gameboard {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(0.75rem, 2vw, 1.5rem);
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+    background-image: none;
+    background-color: #00008b;
+}
+
+body.gameboard * {
+    box-sizing: border-box;
+}
+
+body.final {
+    background-image: none;
+    background-color: #00008b;
+}
+
+body.final .gameboard-header {
+    position: relative;
+    min-height: 12vh;
+    background-image: url('../images/jeopardy_logo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+body.final .round-buttons {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+body.final .round-btn {
+    padding: 0.5rem 1rem;
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    font-weight: bold;
+    color: #fff;
+    background-color: #06038d;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+body.final .round-btn:hover {
+    background-color: #0a05b3;
+}
+
+body.final .gameboard-header h1 {
+    margin: 0;
+    padding: 0.25em 0;
+}
+
+body.gameboard .gameboard-header {
+    position: relative;
+    flex-shrink: 0;
+    min-height: 12vh;
+    background-image: url('../images/jeopardy_logo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+body.gameboard .round-buttons {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+body.gameboard .round-btn {
+    padding: 0.5rem 1rem;
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    font-weight: bold;
+    color: #fff;
+    background-color: #06038d;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+body.gameboard .round-btn:hover {
+    background-color: #0a05b3;
+}
+
+body.gameboard .gameboard-header h1 {
+    margin: 0;
+    padding: 0.25em 0;
+}
+
+body.gameboard table {
+    flex: 1;
+    width: 100%;
+    height: 0;
+    min-height: 0;
+    table-layout: fixed;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+body.gameboard thead {
+    height: 16.666%;
+}
+
+body.gameboard thead tr {
+    height: 100%;
+}
+
+body.gameboard tbody {
+    height: 83.333%;
+}
+
+body.gameboard tbody tr {
+    height: 20%;
+}
+
+body.gameboard th,
+body.gameboard td {
+    border: 4px solid black;
+}
+
+body.gameboard thead th {
+    border-bottom-width: 8px;
+    text-transform: uppercase;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+body.gameboard tbody td {
+    font-size: clamp(0.75rem, 6vw, 3.0rem);
+    color: #d4a42d;
+    font-family: Helvetica, Arial, sans-serif;
+    text-align: center;
+    font-weight: bold;
+}
+
+.begin-btn {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #06038d;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.begin-btn:hover {
+    background-color: #0a05b3;
+}

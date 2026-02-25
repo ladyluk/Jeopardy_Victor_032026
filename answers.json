@@ -1,0 +1,143 @@
+{
+    "categories":{
+        "jeopardy": {
+            "Jets": {
+                "100": "foo",
+                "200": "bar",
+                "300": "baz",
+                "400": "qux",
+                "500": "quux"
+            },
+            "Jet-Setters": {
+                "100": "bar",
+                "200": "baz",
+                "300": "qux",
+                "400": "quux",
+                "500": "corge"
+            },
+            "The Forgotten Borough": {
+                "100": "baz",
+                "200": "qux",
+                "300": "quux",
+                "400": "corge",
+                "500": "grault"
+            },
+            "Technologic": {
+                "100": "qux",
+                "200": "quux",
+                "300": "corge",
+                "400": "grault",
+                "500": "garply"
+            },
+            "Nippon Ga Ichiban": {
+                "100": "quux",
+                "200": "corge",
+                "300": "grault",
+                "400": "garply",
+                "500": "waldo"
+            },
+            "US National Parks": {
+                "100": "corge",
+                "200": "grault",
+                "300": "garply",
+                "400": "waldo",
+                "500": "fred"
+            },
+            "Driving Me Crazy": {
+                "100": "grault",
+                "200": "garply",
+                "300": "waldo",
+                "400": "fred",
+                "500": "xyzzy"
+            }
+        },
+        "double jeopardy": {
+            "Up in the airlines": {
+                "100": "foo",
+                "200": "bar",
+                "300": "baz",
+                "400": "qux",
+                "500": "quux"
+            },
+            "Codenames": {
+                "100": "bar",
+                "200": "baz",
+                "300": "qux",
+                "400": "corge",
+                "500": "garply"
+            },
+            "Garden State": {
+                "100": "baz",
+                "200": "qux",
+                "300": "corge",
+                "400": "garply",
+                "500": "waldo"
+            },
+            "Covfefe": {
+                "100": "qux",
+                "200": "quux",
+                "300": "corge",
+                "400": "garply",
+                "500": "waldo"
+            },
+            "The not-so fairweather Office fans": {
+                "100": "quux",
+                "200": "corge",
+                "300": "grault",
+                "400": "garply",
+                "500": "waldo"
+            },
+            "War, what is it good for?": {
+                "100": "corge",
+                "200": "grault",
+                "300": "garply",
+                "400": "waldo",
+                "500": "fred"
+            },
+            "Spotify Wrap-Up": {
+                "100": "grault",
+                "200": "garply",
+                "300": "waldo",
+                "400": "fred",
+                "500": "xyzzy"
+            }
+        },
+        "Vic jeopardy": {
+            "Pastime Killers": {
+                "100": "foo",
+                "200": "bar",
+                "300": "baz"
+            },
+            "All in the family": {
+                "100": "bar",
+                "200": "baz",
+                "300": "qux"
+            },
+            "Work work work work work": {
+                "100": "baz",
+                "200": "qux",
+                "300": "quux"
+            },
+            "I went to Cornell, ever heard of it?": {
+                "100": "qux",
+                "200": "quux",
+                "300": "corge"
+            },
+            "Stuy Days": {
+                "100": "quux",
+                "200": "corge",
+                "300": "grault"
+            },
+            "Eat My Shorts": {
+                "100": "corge",
+                "200": "grault",
+                "300": "garply"
+            },
+            "Bathroom Reading Material": {
+                "100": "grault",
+                "200": "garply",
+                "300": "waldo"
+            }
+        }
+    }
+}
