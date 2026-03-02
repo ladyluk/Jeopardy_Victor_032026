@@ -83,7 +83,7 @@ body.teams .gameboard-header {
 
 .teams-container .contestant-1 {
     left: 21%;
-    top: 4%;
+    top: -22%;
     max-height: 100%;
     transform: translate(-50%, 0);
 }
@@ -245,6 +245,53 @@ body.gameboard .gameboard-header {
 .gameboard-header h1 {
     margin: 0;
     padding: 0.25em 0;
+}
+
+.header-contestants {
+    position: absolute;
+    bottom: 0;
+    left: 0.5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding: 0 0 0.25rem;
+    z-index: 1;
+}
+
+.header-contestant-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gameboard-header .header-contestant {
+    height: 4rem;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.gameboard-header .header-contestant-wrap:first-child .header-contestant {
+    height: 6rem;
+    margin-top: 1.5rem;
+}
+
+.header-scoreboard {
+    margin-top: 0.25rem;
+    min-width: 4rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #fff;
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.header-contestant-wrap:first-child .header-scoreboard {
+    margin-top: 0;
 }
 
 .round-buttons {
