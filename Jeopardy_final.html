@@ -15,5 +15,141 @@
             <a href="/final" class="round-btn">Final Jeopardy</a>
         </div>
     </header>
+    <main class="final-category-wrap">
+        <h2 id="finalCategory" class="final-category"></h2>
+    </main>
+    <!-- The audio file (e.g., sound.mp3) is in the same folder as this HTML file -->
+    <audio id="myAudio" src="/audio/jeopardy-final-jeopardy-thinking-music.mp3"></audio>
+
+    <div id="audioPlayerWrap" class="audio-player-wrap bottom-right-btn audio-player-hidden">
+        <button id="playPauseBtn" class="audio-player-btn" onclick="togglePlayPause()" aria-label="Play">▶</button>
+        <button id="replayBtn" class="audio-player-btn" type="button" onclick="replayAudio()" aria-label="Replay"><img src="/images/replay.png" alt="" class="replay-icon"></button>
+        <div class="audio-time-bar-wrap">
+            <span id="audioTime" class="audio-time">0</span>
+            <div id="audioProgressTrack" class="audio-progress-track">
+            <div id="audioProgressBar" class="audio-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('myAudio');
+        const btn = document.getElementById('playPauseBtn');
+        const timeEl = document.getElementById('audioTime');
+        const barEl = document.getElementById('audioProgressBar');
+        const trackEl = document.getElementById('audioProgressTrack');
+        const TOTAL_DURATION = 300;
+        var loopCount = 0;
+
+        function replayAudio() {
+            loopCount = 0;
+            audio.currentTime = 0;
+            audio.play();
+            btn.textContent = '⏸';
+            btn.setAttribute('aria-label', 'Pause');
+            updateTimeAndBar();
+        }
+
+        function togglePlayPause() {
+            if (btn.textContent === '▶') {
+                audio.play();
+                btn.textContent = '⏸';
+                btn.setAttribute('aria-label', 'Pause');
+            } else {
+                audio.pause();
+                btn.textContent = '▶';
+                btn.setAttribute('aria-label', 'Play');
+            }
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function getDisplayCurrent() {
+            var d = audio.duration;
+            if (!isFinite(d) || d <= 0) return 0;
+            return Math.min(loopCount * d + audio.currentTime, TOTAL_DURATION);
+        }
+
+        function updateTimeAndBar() {
+            var d = audio.duration;
+            if (!isFinite(d) || d <= 0) {
+                timeEl.textContent = '0:00 / 5:00';
+                barEl.style.width = '0%';
+                return;
+            }
+            var current = getDisplayCurrent();
+            timeEl.textContent = formatTime(current) + ' / 5:00';
+            barEl.style.width = (100 * current / TOTAL_DURATION) + '%';
+        }
+
+        function seekToPosition(e) {
+            var d = audio.duration;
+            if (!isFinite(d) || d <= 0) return;
+            const rect = trackEl.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const fraction = Math.max(0, Math.min(1, x / rect.width));
+            var seekSeconds = fraction * TOTAL_DURATION;
+            if (seekSeconds >= TOTAL_DURATION) {
+                loopCount = 10;
+                audio.pause();
+                audio.currentTime = d - 0.01;
+                btn.textContent = '▶';
+                btn.setAttribute('aria-label', 'Play');
+            } else {
+                loopCount = Math.floor(seekSeconds / d);
+                audio.currentTime = seekSeconds - loopCount * d;
+            }
+            updateTimeAndBar();
+        }
+
+        trackEl.addEventListener('click', seekToPosition);
+
+        audio.addEventListener('loadedmetadata', updateTimeAndBar);
+        audio.addEventListener('timeupdate', updateTimeAndBar);
+        audio.addEventListener('ended', function () {
+            loopCount++;
+            if (loopCount < 10) {
+                audio.currentTime = 0;
+                audio.play();
+            } else {
+                btn.textContent = '▶';
+                btn.setAttribute('aria-label', 'Play');
+            }
+            updateTimeAndBar();
+        });
+        audio.addEventListener('play', () => { btn.textContent = '⏸'; btn.setAttribute('aria-label', 'Pause'); });
+        audio.addEventListener('pause', () => { btn.textContent = '▶'; btn.setAttribute('aria-label', 'Play'); });
+
+        updateTimeAndBar();
+
+        var finalContent = null;
+        var categoryEl = document.getElementById('finalCategory');
+
+        fetch('/answers.json')
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                var fj = data.categories && (data.categories['Final Jeopardy'] || data.categories['final jeopardy']);
+                if (!fj || !categoryEl) return;
+                var cat = fj.Category;
+                finalContent = fj.Content || '';
+                if (cat) categoryEl.textContent = String(cat).toUpperCase();
+            })
+            .catch(function () {});
+
+        if (categoryEl) {
+            categoryEl.addEventListener('click', function () {
+                if (finalContent !== null) {
+                    categoryEl.textContent = finalContent;
+                    categoryEl.classList.add('final-category-showing-content');
+                    var wrap = document.getElementById('audioPlayerWrap');
+                    if (wrap) wrap.classList.remove('audio-player-hidden');
+                }
+            });
+        }
+    </script>
 </body>
 </html>

@@ -29,24 +29,28 @@
             <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
         </tbody>
     </table>
+    <div id="clueModal" class="clue-modal" aria-hidden="true">
+        <div class="clue-modal-content">
+            <p id="clueModalText" class="clue-modal-text"></p>
+            <button type="button" class="clue-modal-close" aria-label="Close">&times;</button>
+        </div>
+    </div>
     <script>
         (function () {
             var roundKey = (function () {
                 var params = new URLSearchParams(window.location.search);
                 var round = params.get('round');
-                if (round === 'double') return 'double jeopardy';
-                if (round === 'vic') return 'Vic jeopardy';
-                return 'jeopardy';
+                if (round === 'double') return 'Double Jeopardy';
+                if (round === 'vic') return 'Vic Jeopardy';
+                return 'Jeopardy';
             })();
 
-            fetch('answers.json')
+            fetch('/answers.json')
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
-                    var categories = data.categories[roundKey];
-                    if (!categories) return;
-                    var categoryNames = Object.keys(categories);
-                    var firstCategory = categories[categoryNames[0]];
-                    var valueKeys = firstCategory ? Object.keys(firstCategory) : ['100', '200', '300', '400', '500'];
+                    var roundData = data.categories && data.categories[roundKey];
+                    if (!roundData) return;
+                    var categoryNames = Object.keys(roundData);
 
                     var headers = document.querySelectorAll('body.gameboard thead th');
                     headers.forEach(function (th, i) {
@@ -54,19 +58,77 @@
                     });
 
                     var rows = document.querySelectorAll('body.gameboard tbody tr');
-                    valueKeys.forEach(function (valueKey, rowIndex) {
-                        var cells = rows[rowIndex] ? rows[rowIndex].querySelectorAll('td') : [];
-                        categoryNames.forEach(function (categoryName, colIndex) {
-                            if (cells[colIndex]) cells[colIndex].textContent = valueKey;
-                        });
-                        for (var j = categoryNames.length; j < cells.length; j++) {
-                            if (cells[j]) cells[j].textContent = '';
-                        }
+                    var maxRows = 0;
+                    var valueKeysByCol = categoryNames.map(function (name) {
+                        var cat = roundData[name];
+                        var content = cat && cat.content;
+                        var keys = content ? Object.keys(content) : [];
+                        if (keys.length > maxRows) maxRows = keys.length;
+                        return keys;
                     });
-                    for (var r = valueKeys.length; r < rows.length; r++) {
-                        var extraCells = rows[r].querySelectorAll('td');
-                        for (var c = 0; c < extraCells.length; c++) extraCells[c].textContent = '';
+
+                    for (var r = 0; r < rows.length; r++) {
+                        var cells = rows[r].querySelectorAll('td');
+                        for (var c = 0; c < categoryNames.length; c++) {
+                            var valueKeys = valueKeysByCol[c];
+                            var valueKey = (r < valueKeys.length) ? valueKeys[r] : null;
+                            if (cells[c]) {
+                                cells[c].textContent = valueKey || '';
+                                if (valueKey) {
+                                    cells[c].classList.add('clue-cell');
+                                    cells[c].setAttribute('data-category', categoryNames[c]);
+                                    cells[c].setAttribute('data-value', valueKey);
+                                }
+                            }
+                        }
+                        for (var c = categoryNames.length; c < cells.length; c++) {
+                            if (cells[c]) cells[c].textContent = '';
+                        }
                     }
+
+                    var modal = document.getElementById('clueModal');
+                    var modalText = document.getElementById('clueModalText');
+                    var closeBtn = modal && modal.querySelector('.clue-modal-close');
+                    var activeClueCell = null;
+
+                    function showClue(cell, categoryName, valueKey) {
+                        var cat = roundData[categoryName];
+                        var contentObj = cat && cat.content;
+                        var text = contentObj && contentObj[valueKey];
+                        if (modal && modalText && text !== undefined) {
+                            activeClueCell = cell;
+                            modalText.textContent = text;
+                            modal.classList.add('clue-modal-open');
+                            modal.setAttribute('aria-hidden', 'false');
+                        }
+                    }
+
+                    function hideClue() {
+                        if (activeClueCell) {
+                            activeClueCell.textContent = '';
+                            activeClueCell.classList.remove('clue-cell');
+                            activeClueCell.removeAttribute('data-category');
+                            activeClueCell.removeAttribute('data-value');
+                            activeClueCell = null;
+                        }
+                        if (modal) {
+                            modal.classList.remove('clue-modal-open');
+                            modal.setAttribute('aria-hidden', 'true');
+                        }
+                    }
+
+                    document.querySelectorAll('body.gameboard td.clue-cell').forEach(function (cell) {
+                        cell.addEventListener('click', function () {
+                            var cat = cell.getAttribute('data-category');
+                            var val = cell.getAttribute('data-value');
+                            if (cat && val) showClue(cell, cat, val);
+                        });
+                    });
+
+                    if (closeBtn) closeBtn.addEventListener('click', hideClue);
+                    if (modal) modal.addEventListener('click', function (e) {
+                        if (e.target === modal) hideClue();
+                    });
                 })
                 .catch(function () { });
         })();

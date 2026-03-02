@@ -14,6 +14,10 @@ def gameboard():
 def final():
     return send_file('Jeopardy_final.html')
 
+@app.route('/teams')
+def teams():
+    return send_file('teams.html')
+
 @app.route('/style.css')
 def style():
     return send_file('style.css', mimetype='text/css')
@@ -21,6 +25,10 @@ def style():
 @app.route('/images/<path:filename>')
 def images(filename):
     return send_from_directory('images', filename)
+
+@app.route('/audio/<path:filename>')
+def audio(filename):
+    return send_from_directory('audio', filename)
 
 @app.route('/answers.json')
 def answers_json():

@@ -5,7 +5,7 @@ html, body {
 
 body {
     position: relative;
-    background-image: url('../images/Jeopardy-season-36-open.jpg');
+    background-image: url('../images/jeopardy_background_pics/jeopardy-season-36-open.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -30,59 +30,107 @@ body.gameboard * {
 }
 
 body.final {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background-image: none;
     background-color: #00008b;
+}
+
+body.teams {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: none;
+    background-color: #00008b;
+}
+
+body.teams .gameboard-header {
+    flex-shrink: 0;
+}
+
+.teams-main {
+    flex: 1;
+    padding: 1rem;
+}
+
+.teams-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.teams-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+body.final * {
+    box-sizing: border-box;
+}
+
+body.final .final-category-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    min-height: 0;
+}
+
+body.final .final-category {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.1;
+    max-width: 100%;
+    font-size: clamp(1.5rem, 12vmin, 8rem);
+    cursor: pointer;
+}
+
+body.final .final-category.final-category-showing-content {
+    text-transform: uppercase;
+    font-size: clamp(1.25rem, 6vmin, 3.25rem);
+    line-height: 1.4;
+    font-weight: normal;
+    cursor: default;
+    margin-left: 4rem;
+    margin-right: 4rem;
 }
 
 body.final .gameboard-header {
     position: relative;
     min-height: 12vh;
-    background-image: url('../images/jeopardy_logo.jpg');
+    background-image: url('../images/jeopardy_background_pics/3_s37_logo.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
 
-body.final .round-buttons {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-}
-
-body.final .round-btn {
-    padding: 0.5rem 1rem;
-    font-size: clamp(0.7rem, 1.5vw, 1rem);
-    font-weight: bold;
-    color: #fff;
-    background-color: #06038d;
-    border: 2px solid #fff;
-    border-radius: 4px;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-body.final .round-btn:hover {
-    background-color: #0a05b3;
-}
-
-body.final .gameboard-header h1 {
-    margin: 0;
-    padding: 0.25em 0;
+/* Shared header and nav buttons (gameboard + final) */
+.gameboard-header {
+    position: relative;
+    min-height: 12vh;
+    background-image: url('images/jeopardy_background_pics/3_s37_logo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 body.gameboard .gameboard-header {
-    position: relative;
     flex-shrink: 0;
-    min-height: 12vh;
-    background-image: url('../images/jeopardy_logo.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 }
 
-body.gameboard .round-buttons {
+.gameboard-header h1 {
+    margin: 0;
+    padding: 0.25em 0;
+}
+
+.round-buttons {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
@@ -90,25 +138,27 @@ body.gameboard .round-buttons {
     gap: 0.5rem;
 }
 
-body.gameboard .round-btn {
-    padding: 0.5rem 1rem;
-    font-size: clamp(0.7rem, 1.5vw, 1rem);
+.round-btn {
+    box-sizing: border-box;
+    display: inline-block;
+    min-width: 140px;
+    min-height: 40px;
+    padding: 8px 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
     font-weight: bold;
+    line-height: 1.2;
     color: #fff;
     background-color: #06038d;
     border: 2px solid #fff;
     border-radius: 4px;
     text-decoration: none;
     cursor: pointer;
+    text-align: center;
 }
 
-body.gameboard .round-btn:hover {
+.round-btn:hover {
     background-color: #0a05b3;
-}
-
-body.gameboard .gameboard-header h1 {
-    margin: 0;
-    padding: 0.25em 0;
 }
 
 body.gameboard table {
@@ -158,21 +208,177 @@ body.gameboard tbody td {
     font-weight: bold;
 }
 
+body.gameboard td.clue-cell {
+    cursor: pointer;
+}
+
+body.gameboard td.clue-cell:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Clue modal (gameboard) */
+.clue-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.75);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.clue-modal.clue-modal-open {
+    display: flex;
+}
+
+.clue-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow: auto;
+    background-color: #00008b;
+    border: 4px solid #fff;
+    border-radius: 8px;
+    padding: 2rem 3rem 2rem 2rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.clue-modal-text {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(1rem, 4vmin, 2rem);
+    line-height: 1.4;
+    color: #fff;
+}
+
+.clue-modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #fff;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.clue-modal-close:hover {
+    color: #d4a42d;
+}
+
+/* Begin button (main page) – same size as .round-btn, different position */
 .begin-btn {
+    box-sizing: border-box;
+    display: inline-block;
     position: absolute;
     bottom: 2rem;
     right: 2rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 1.25rem;
+    min-width: 140px;
+    min-height: 40px;
+    padding: 8px 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
     font-weight: bold;
+    line-height: 1.2;
     color: #fff;
     background-color: #06038d;
     border: 2px solid #fff;
     border-radius: 4px;
     text-decoration: none;
     cursor: pointer;
+    text-align: center;
 }
 
 .begin-btn:hover {
     background-color: #0a05b3;
+}
+
+/* Same position as Begin button (main page) – for e.g. Final page audio button */
+.bottom-right-btn {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+}
+
+/* Final page: one white pill containing play + time + progress bar */
+.audio-player-hidden {
+    visibility: hidden;
+}
+
+.audio-player-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    padding: 5px 20px 5px 10px;
+    background-color: #FFFFFF;
+    border-radius: 999px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.audio-time-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.audio-time {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    color: #333;
+    min-width: 7ch;
+}
+
+.audio-progress-track {
+    width: 120px;
+    height: 6px;
+    background-color: rgba(0, 0, 0, 0.12);
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.audio-progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #616161;
+    border-radius: 3px;
+    transition: width 0.15s linear;
+}
+
+/* Play/pause button inside the pill – no own background, just icon */
+.audio-player-btn {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1;
+    color: #000;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    text-align: center;
+}
+
+.audio-player-btn:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+.audio-player-btn .replay-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+    pointer-events: none;
 }
