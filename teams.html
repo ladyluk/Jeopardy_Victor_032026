@@ -21,11 +21,73 @@
         <div class="teams-container">
             <img src="images/jeopardy_background_pics/podium.jpg" alt="Teams" class="podium-jpg">
             <img src="images/contestants/Vic.png" alt="Vic" class="contestant-photo contestant-1">
+            <img src="images/contestants/Skittles.png" alt="Skittles" class="contestant-photo contestant-2">
+            <img src="images/contestants/Maverick.png" alt="Maverick" class="contestant-photo contestant-3">
             <img src="images/jeopardy_background_pics/podium.png" alt="" class="podium-png">
             <span class="podium-label podium-1">Victor</span>
-            <span class="podium-label podium-2">Skittles</span>
-            <span class="podium-label podium-3">Maverick</span>
+            <span class="podium-label podium-2 clickable-label" id="label-skittles" role="button" tabindex="0">Skittles</span>
+            <span class="podium-label podium-3 clickable-label" id="label-maverick" role="button" tabindex="0">Maverick</span>
+            <div class="players-box players-box-skittles" id="players-skittles" aria-hidden="true"></div>
+            <div class="players-box players-box-maverick" id="players-maverick" aria-hidden="true"></div>
         </div>
     </main>
+    <script>
+        (function () {
+            var players = [];
+            function getRandomPlayers(count, exclude) {
+                var excludeSet = (exclude && exclude.length) ? {} : null;
+                if (excludeSet) exclude.forEach(function (n) { excludeSet[n] = true; });
+                var pool = excludeSet ? players.filter(function (p) { return !excludeSet[p]; }) : players.slice();
+                if (pool.length < count) return pool.slice();
+                var shuffled = pool.slice();
+                for (var i = shuffled.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var t = shuffled[i];
+                    shuffled[i] = shuffled[j];
+                    shuffled[j] = t;
+                }
+                return shuffled.slice(0, count);
+            }
+            function getNamesInBox(boxId) {
+                var box = document.getElementById(boxId);
+                if (!box || box.getAttribute('aria-hidden') === 'true') return [];
+                var names = [];
+                box.querySelectorAll('.player-name').forEach(function (el) { names.push(el.textContent); });
+                return names;
+            }
+            function showPlayers(boxId) {
+                var box = document.getElementById(boxId);
+                var isHidden = box.getAttribute('aria-hidden') === 'true';
+                box.innerHTML = '';
+                if (isHidden) {
+                    var otherBoxId = boxId === 'players-skittles' ? 'players-maverick' : 'players-skittles';
+                    var exclude = getNamesInBox(otherBoxId);
+                    var six = getRandomPlayers(6, exclude);
+                    six.forEach(function (name) {
+                        var p = document.createElement('p');
+                        p.className = 'player-name';
+                        p.textContent = name;
+                        box.appendChild(p);
+                    });
+                    box.setAttribute('aria-hidden', 'false');
+                    box.classList.add('players-box-visible');
+                } else {
+                    box.setAttribute('aria-hidden', 'true');
+                    box.classList.remove('players-box-visible');
+                }
+            }
+            fetch('/players.json').then(function (r) { return r.json(); }).then(function (data) {
+                players = data.players || [];
+                document.getElementById('label-skittles').addEventListener('click', function () { showPlayers('players-skittles'); });
+                document.getElementById('label-skittles').addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showPlayers('players-skittles'); }
+                });
+                document.getElementById('label-maverick').addEventListener('click', function () { showPlayers('players-maverick'); });
+                document.getElementById('label-maverick').addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showPlayers('players-maverick'); }
+                });
+            });
+        })();
+    </script>
 </body>
 </html>

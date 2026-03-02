@@ -34,5 +34,9 @@ def audio(filename):
 def answers_json():
     return send_file('answers.json', mimetype='application/json')
 
+@app.route('/players.json')
+def players_json():
+    return send_file('players.json', mimetype='application/json')
+
 if __name__ == '__main__':
     app.run(debug=True)
