@@ -94,7 +94,23 @@
                     ['vic', 'skittles', 'maverick'].forEach(function (team) {
                         localStorage.setItem('jeopardy-score-' + team, '0');
                     });
+                    localStorage.removeItem('jeopardy-hidden-clues');
                     localStorage.setItem('jeopardy-boot-id', bootData.boot_id);
+                }
+                function getHiddenClues() {
+                    try {
+                        var raw = localStorage.getItem('jeopardy-hidden-clues');
+                        return raw ? JSON.parse(raw) : [];
+                    } catch (e) { return []; }
+                }
+                function addHiddenClue(roundKey, categoryName, valueKey) {
+                    var key = roundKey + '|' + categoryName + '|' + valueKey;
+                    var arr = getHiddenClues();
+                    if (arr.indexOf(key) === -1) arr.push(key);
+                    localStorage.setItem('jeopardy-hidden-clues', JSON.stringify(arr));
+                }
+                function isClueHidden(roundKey, categoryName, valueKey) {
+                    return getHiddenClues().indexOf(roundKey + '|' + categoryName + '|' + valueKey) !== -1;
                 }
                 var roundData = data.categories && data.categories[roundKey];
                 if (!roundData) return;
@@ -121,10 +137,12 @@
                             var valueKeys = valueKeysByCol[c];
                             var valueKey = (r < valueKeys.length) ? valueKeys[r] : null;
                             if (cells[c]) {
-                                cells[c].textContent = valueKey || '';
-                                if (valueKey) {
+                                var catName = categoryNames[c];
+                                var hidden = valueKey && isClueHidden(roundKey, catName, valueKey);
+                                cells[c].textContent = hidden ? '' : (valueKey || '');
+                                if (valueKey && !hidden) {
                                     cells[c].classList.add('clue-cell');
-                                    cells[c].setAttribute('data-category', categoryNames[c]);
+                                    cells[c].setAttribute('data-category', catName);
                                     cells[c].setAttribute('data-value', valueKey);
                                 }
                             }
@@ -192,6 +210,9 @@
 
                     function hideClue() {
                         if (activeClueCell) {
+                            var cat = activeClueCell.getAttribute('data-category');
+                            var val = activeClueCell.getAttribute('data-value');
+                            if (cat && val) addHiddenClue(roundKey, cat, val);
                             activeClueCell.textContent = '';
                             activeClueCell.classList.remove('clue-cell');
                             activeClueCell.removeAttribute('data-category');
