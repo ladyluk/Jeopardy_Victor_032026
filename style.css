@@ -206,6 +206,36 @@ body.teams .gameboard-header {
     pointer-events: auto;
 }
 
+.teams-container .podium-add-btn {
+    position: absolute;
+    z-index: 100;
+    width: 2rem;
+    min-width: 2rem;
+    padding: 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    background-color: #333;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 4%;
+}
+.teams-container .podium-add-btn-1 {
+    left: 30%;
+    top: 40%;
+}
+.teams-container .podium-add-btn-2 {
+    left: 58.5%;
+    top: 40%;
+}
+.teams-container .podium-add-btn-3 {
+    left: 87%;
+    top: 40%;
+}
+
 .teams-container .players-box {
     position: absolute;
     z-index: 4;

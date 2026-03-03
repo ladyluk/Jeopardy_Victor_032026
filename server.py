@@ -1,4 +1,5 @@
 from flask import Flask, send_file, send_from_directory
+import json_converter
 
 app = Flask(__name__)
 
@@ -39,4 +40,5 @@ def players_json():
     return send_file('players.json', mimetype='application/json')
 
 if __name__ == '__main__':
+    json_converter.convert_to_json()
     app.run(debug=True)
