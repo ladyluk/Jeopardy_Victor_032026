@@ -239,6 +239,12 @@
                         ['vic', 'skittles', 'maverick'].forEach(function (team) {
                             localStorage.setItem('jeopardy-score-' + team, '0');
                         });
+                        ['label-victor', 'label-skittles', 'label-maverick'].forEach(function (labelId) {
+                            localStorage.setItem('jeopardy-teams-box-' + labelId, '0');
+                            boxContent[labelId] = '0';
+                            var disp = document.querySelector('.podium-text-display[data-for="' + labelId + '"]');
+                            if (disp) disp.textContent = '0';
+                        });
                         localStorage.removeItem('jeopardy-final-revealed');
                         localStorage.setItem('jeopardy-boot-id', data.boot_id);
                     }
