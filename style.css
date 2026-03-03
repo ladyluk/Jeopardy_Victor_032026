@@ -515,6 +515,11 @@ body.gameboard thead th {
     font-weight: bold;
 }
 
+body.gameboard thead th.category-header-orange {
+    color: black;
+    background-color: orange;
+}
+
 body.gameboard tbody td {
     font-size: clamp(0.75rem, 6vw, 3.0rem);
     color: #d4a42d;

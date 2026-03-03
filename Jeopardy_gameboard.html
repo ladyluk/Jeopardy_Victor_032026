@@ -119,6 +119,9 @@
                     var headers = document.querySelectorAll('body.gameboard thead th');
                     headers.forEach(function (th, i) {
                         th.textContent = categoryNames[i] || '';
+                        th.classList.remove('category-header-orange');
+                        var cat = roundData[categoryNames[i]];
+                        if (cat && cat.color === 'orange') th.classList.add('category-header-orange');
                     });
 
                     var rows = document.querySelectorAll('body.gameboard tbody tr');
