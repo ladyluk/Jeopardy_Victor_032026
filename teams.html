@@ -44,7 +44,7 @@
     <script>
         (function () {
             var players = [];
-            var boxContent = { 'label-victor': '', 'label-skittles': '', 'label-maverick': '' };
+            var boxContent = { 'label-victor': '0', 'label-skittles': '0', 'label-maverick': '0' };
             function showTextBoxForBlackBox(blackBoxEl) {
                 var labelId = blackBoxEl.getAttribute('data-label');
                 var input = document.getElementById('podium-input');
@@ -53,7 +53,7 @@
                 if (!container) return;
                 var cRect = container.getBoundingClientRect();
                 var bRect = blackBoxEl.getBoundingClientRect();
-                input.value = boxContent[labelId] || '';
+                input.value = boxContent[labelId] || '0';
                 var displayEl = container.querySelector('.podium-text-display[data-for="' + labelId + '"]');
                 if (displayEl) displayEl.classList.remove('podium-text-display-visible');
                 input.style.left = (bRect.left - cRect.left) + 'px';
@@ -136,6 +136,11 @@
                 box.addEventListener('keydown', function (e) {
                     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showTextBoxForBlackBox(box); }
                 });
+            });
+            document.querySelectorAll('.podium-text-display').forEach(function (disp) {
+                var labelId = disp.getAttribute('data-for');
+                disp.textContent = boxContent[labelId] || '0';
+                disp.classList.add('podium-text-display-visible');
             });
             document.getElementById('label-skittles').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-skittles'); });
             document.getElementById('label-maverick').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-maverick'); });
