@@ -10,15 +10,15 @@
         <div class="header-contestants">
             <div class="header-contestant-wrap">
                 <img src="images/contestants/Vic.png" alt="Vic" class="header-contestant">
-                <div class="header-scoreboard">$0</div>
+                <div id="score-vic" class="header-scoreboard">$0</div>
             </div>
             <div class="header-contestant-wrap">
                 <img src="images/contestants/Skittles.png" alt="Skittles" class="header-contestant">
-                <div class="header-scoreboard">$0</div>
+                <div id="score-skittles" class="header-scoreboard">$0</div>
             </div>
             <div class="header-contestant-wrap">
                 <img src="images/contestants/Maverick.png" alt="Maverick" class="header-contestant">
-                <div class="header-scoreboard">$0</div>
+                <div id="score-maverick" class="header-scoreboard">$0</div>
             </div>
         </div>
         <div class="round-buttons">
@@ -47,6 +47,29 @@
     <div id="clueModal" class="clue-modal" aria-hidden="true">
         <div class="clue-modal-content">
             <p id="clueModalText" class="clue-modal-text"></p>
+            <div class="clue-modal-teams">
+                <div class="clue-modal-team" data-team="vic">
+                    <img src="images/contestants/Vic.png" alt="Vic" class="clue-modal-team-img">
+                    <div class="clue-modal-buttons">
+                        <button type="button" class="clue-modal-btn clue-modal-btn-win" aria-label="Correct">&check;</button>
+                        <button type="button" class="clue-modal-btn clue-modal-btn-lose" aria-label="Wrong">&times;</button>
+                    </div>
+                </div>
+                <div class="clue-modal-team" data-team="skittles">
+                    <img src="images/contestants/Skittles.png" alt="Skittles" class="clue-modal-team-img">
+                    <div class="clue-modal-buttons">
+                        <button type="button" class="clue-modal-btn clue-modal-btn-win" aria-label="Correct">&check;</button>
+                        <button type="button" class="clue-modal-btn clue-modal-btn-lose" aria-label="Wrong">&times;</button>
+                    </div>
+                </div>
+                <div class="clue-modal-team" data-team="maverick">
+                    <img src="images/contestants/Maverick.png" alt="Maverick" class="clue-modal-team-img">
+                    <div class="clue-modal-buttons">
+                        <button type="button" class="clue-modal-btn clue-modal-btn-win" aria-label="Correct">&check;</button>
+                        <button type="button" class="clue-modal-btn clue-modal-btn-lose" aria-label="Wrong">&times;</button>
+                    </div>
+                </div>
+            </div>
             <button type="button" class="clue-modal-close" aria-label="Close">&times;</button>
         </div>
     </div>
@@ -105,6 +128,20 @@
                     var modalText = document.getElementById('clueModalText');
                     var closeBtn = modal && modal.querySelector('.clue-modal-close');
                     var activeClueCell = null;
+                    var scores = { vic: 0, skittles: 0, maverick: 0 };
+                    var currentClueValue = 0;
+
+                    function parseValue(valueKey) {
+                        var str = String(valueKey || '').replace(/[^0-9]/g, '');
+                        return parseInt(str, 10) || 0;
+                    }
+
+                    function updateScoreboard(team, delta) {
+                        if (scores[team] === undefined) return;
+                        scores[team] += delta;
+                        var el = document.getElementById('score-' + team);
+                        if (el) el.textContent = '$' + scores[team];
+                    }
 
                     function showClue(cell, categoryName, valueKey) {
                         var cat = roundData[categoryName];
@@ -112,11 +149,20 @@
                         var text = contentObj && contentObj[valueKey];
                         if (modal && modalText && text !== undefined) {
                             activeClueCell = cell;
+                            currentClueValue = parseValue(valueKey);
                             modalText.textContent = text;
                             modal.classList.add('clue-modal-open');
                             modal.setAttribute('aria-hidden', 'false');
                         }
                     }
+
+                    modal && modal.querySelectorAll('.clue-modal-team').forEach(function (wrap) {
+                        var team = wrap.getAttribute('data-team');
+                        var winBtn = wrap.querySelector('.clue-modal-btn-win');
+                        var loseBtn = wrap.querySelector('.clue-modal-btn-lose');
+                        if (winBtn) winBtn.addEventListener('click', function () { updateScoreboard(team, currentClueValue); });
+                        if (loseBtn) loseBtn.addEventListener('click', function () { updateScoreboard(team, -currentClueValue); });
+                    });
 
                     function hideClue() {
                         if (activeClueCell) {

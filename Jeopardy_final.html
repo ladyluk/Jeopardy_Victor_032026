@@ -36,6 +36,11 @@
     <!-- The audio file (e.g., sound.mp3) is in the same folder as this HTML file -->
     <audio id="myAudio" src="/audio/jeopardy-final-jeopardy-thinking-music.mp3"></audio>
 
+    <div id="fiveMinTimerWrap" class="final-timer-wrap bottom-right-btn">
+        <button type="button" id="fiveMinPlayBtn" class="final-timer-play-btn" aria-label="Play">▶</button>
+        <span id="fiveMinTimer" class="final-timer-display">5:00</span>
+    </div>
+
     <div id="audioPlayerWrap" class="audio-player-wrap bottom-right-btn audio-player-hidden">
         <button id="playPauseBtn" class="audio-player-btn" onclick="togglePlayPause()" aria-label="Play">▶</button>
         <button id="replayBtn" class="audio-player-btn" type="button" onclick="replayAudio()" aria-label="Replay"><img src="/images/replay.png" alt="" class="replay-icon"></button>
@@ -53,7 +58,7 @@
         const timeEl = document.getElementById('audioTime');
         const barEl = document.getElementById('audioProgressBar');
         const trackEl = document.getElementById('audioProgressTrack');
-        const TOTAL_DURATION = 300;
+        const TOTAL_DURATION = 90;
         var loopCount = 0;
 
         function replayAudio() {
@@ -92,12 +97,12 @@
         function updateTimeAndBar() {
             var d = audio.duration;
             if (!isFinite(d) || d <= 0) {
-                timeEl.textContent = '0:00 / 5:00';
+                timeEl.textContent = '0:00 / ' + formatTime(TOTAL_DURATION);
                 barEl.style.width = '0%';
                 return;
             }
             var current = getDisplayCurrent();
-            timeEl.textContent = formatTime(current) + ' / 5:00';
+            timeEl.textContent = formatTime(current) + ' / ' + formatTime(TOTAL_DURATION);
             barEl.style.width = (100 * current / TOTAL_DURATION) + '%';
         }
 
@@ -155,11 +160,68 @@
             })
             .catch(function () {});
 
+        var fiveMinSeconds = 300;
+        var fiveMinInterval = null;
+        var fiveMinEl = document.getElementById('fiveMinTimer');
+        var fiveMinWrap = document.getElementById('fiveMinTimerWrap');
+
+        function updateFiveMinDisplay() {
+            if (!fiveMinEl) return;
+            fiveMinEl.textContent = formatTime(fiveMinSeconds);
+        }
+
+        function startFiveMinTimer() {
+            updateFiveMinDisplay();
+            if (fiveMinInterval) return;
+            fiveMinInterval = setInterval(function () {
+                if (fiveMinSeconds <= 0) {
+                    clearInterval(fiveMinInterval);
+                    fiveMinInterval = null;
+                    if (fiveMinPlayBtn) {
+                        fiveMinPlayBtn.textContent = '▶';
+                        fiveMinPlayBtn.setAttribute('aria-label', 'Play');
+                    }
+                    return;
+                }
+                fiveMinSeconds--;
+                updateFiveMinDisplay();
+            }, 1000);
+        }
+
+        function stopFiveMinTimer() {
+            if (fiveMinInterval) {
+                clearInterval(fiveMinInterval);
+                fiveMinInterval = null;
+            }
+        }
+
+        var fiveMinPlayBtn = document.getElementById('fiveMinPlayBtn');
+        if (fiveMinPlayBtn) {
+            fiveMinPlayBtn.addEventListener('click', function () {
+                if (fiveMinInterval) {
+                    stopFiveMinTimer();
+                    fiveMinPlayBtn.textContent = '▶';
+                    fiveMinPlayBtn.setAttribute('aria-label', 'Play');
+                } else {
+                    startFiveMinTimer();
+                    fiveMinPlayBtn.textContent = '⏸';
+                    fiveMinPlayBtn.setAttribute('aria-label', 'Pause');
+                }
+            });
+        }
+
+        updateFiveMinDisplay();
+
         if (categoryEl) {
             categoryEl.addEventListener('click', function () {
                 if (finalContent !== null) {
                     categoryEl.textContent = finalContent;
                     categoryEl.classList.add('final-category-showing-content');
+                    if (fiveMinInterval) {
+                        clearInterval(fiveMinInterval);
+                        fiveMinInterval = null;
+                    }
+                    if (fiveMinWrap) fiveMinWrap.classList.add('audio-player-hidden');
                     var wrap = document.getElementById('audioPlayerWrap');
                     if (wrap) wrap.classList.remove('audio-player-hidden');
                 }

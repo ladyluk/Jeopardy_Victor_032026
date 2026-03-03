@@ -250,11 +250,11 @@ body.gameboard .gameboard-header {
 .header-contestants {
     position: absolute;
     bottom: 0;
-    left: 0.5rem;
+    left: 3.0rem;
     display: flex;
     justify-content: flex-start;
     align-items: flex-end;
-    gap: 0.5rem;
+    gap: 2.0rem;
     padding: 0 0 0.25rem;
     z-index: 1;
 }
@@ -436,6 +436,67 @@ body.gameboard td.clue-cell:hover {
     color: #d4a42d;
 }
 
+.clue-modal-teams {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.clue-modal-team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.clue-modal-team-img {
+    width: auto;
+    height: 4rem;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.clue-modal-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.clue-modal-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    font-size: 1.25rem;
+    line-height: 1;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.clue-modal-btn-win {
+    background-color: #0a5f0a;
+    color: #fff;
+}
+
+.clue-modal-btn-win:hover {
+    background-color: #0d7d0d;
+}
+
+.clue-modal-btn-lose {
+    background-color: #8b0000;
+    color: #fff;
+}
+
+.clue-modal-btn-lose:hover {
+    background-color: #a00;
+}
+
 /* Begin button (main page) ΓÇô same size as .round-btn, different position */
 .begin-btn {
     box-sizing: border-box;
@@ -468,6 +529,52 @@ body.gameboard td.clue-cell:hover {
     position: absolute;
     bottom: 2rem;
     right: 2rem;
+}
+
+.final-timer-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #fff;
+    border-radius: 999px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.final-timer-label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.final-timer-display {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    min-width: 3.5ch;
+}
+
+.final-timer-play-btn {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1;
+    color: #000;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.final-timer-play-btn:hover {
+    background-color: rgba(0, 0, 0, 0.08);
 }
 
 /* Final page: one white pill containing play + time + progress bar */
