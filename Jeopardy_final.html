@@ -217,6 +217,7 @@
                 if (finalContent !== null) {
                     categoryEl.textContent = finalContent;
                     categoryEl.classList.add('final-category-showing-content');
+                    localStorage.setItem('jeopardy-final-revealed', '1');
                     if (fiveMinInterval) {
                         clearInterval(fiveMinInterval);
                         fiveMinInterval = null;

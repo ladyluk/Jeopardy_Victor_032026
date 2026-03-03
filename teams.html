@@ -239,6 +239,7 @@
                         ['vic', 'skittles', 'maverick'].forEach(function (team) {
                             localStorage.setItem('jeopardy-score-' + team, '0');
                         });
+                        localStorage.removeItem('jeopardy-final-revealed');
                         localStorage.setItem('jeopardy-boot-id', data.boot_id);
                     }
                 });
@@ -247,6 +248,10 @@
                 initScoresToZero();
                 refreshHeaderScoreboard();
             });
+            if (localStorage.getItem('jeopardy-final-revealed') === '1') {
+                var tc = document.querySelector('.teams-container');
+                if (tc) tc.classList.add('final-revealed');
+            }
             document.getElementById('label-skittles').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-skittles'); });
             document.getElementById('label-maverick').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-maverick'); });
             fetch('/players.json').then(function (r) { return r.json(); }).then(function (data) {

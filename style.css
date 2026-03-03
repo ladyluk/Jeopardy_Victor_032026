@@ -206,6 +206,14 @@ body.teams .gameboard-header {
     pointer-events: auto;
 }
 
+.teams-container .podium-add-btn,
+.teams-container .podium-undo-btn {
+    visibility: hidden;
+}
+.teams-container.final-revealed .podium-add-btn,
+.teams-container.final-revealed .podium-undo-btn {
+    visibility: visible;
+}
 .teams-container .podium-add-btn {
     position: absolute;
     z-index: 100;
