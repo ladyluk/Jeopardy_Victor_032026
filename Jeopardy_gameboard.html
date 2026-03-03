@@ -204,7 +204,7 @@
                         var team = wrap.getAttribute('data-team');
                         var winBtn = wrap.querySelector('.clue-modal-btn-win');
                         var loseBtn = wrap.querySelector('.clue-modal-btn-lose');
-                        if (winBtn) winBtn.addEventListener('click', function () { updateScoreboard(team, currentClueValue); });
+                        if (winBtn) winBtn.addEventListener('click', function () { updateScoreboard(team, currentClueValue); hideClue(); });
                         if (loseBtn) loseBtn.addEventListener('click', function () { updateScoreboard(team, -currentClueValue); });
                     });
 
