@@ -7,6 +7,20 @@
 </head>
 <body class="teams">
     <header class="gameboard-header">
+        <div class="header-contestants">
+            <div class="header-contestant-wrap">
+                <img src="images/contestants/Vic.png" alt="Vic" class="header-contestant">
+                <div id="score-vic" class="header-scoreboard">$0</div>
+            </div>
+            <div class="header-contestant-wrap">
+                <img src="images/contestants/Skittles.png" alt="Skittles" class="header-contestant">
+                <div id="score-skittles" class="header-scoreboard">$0</div>
+            </div>
+            <div class="header-contestant-wrap">
+                <img src="images/contestants/Maverick.png" alt="Maverick" class="header-contestant">
+                <div id="score-maverick" class="header-scoreboard">$0</div>
+            </div>
+        </div>
         <div class="round-buttons">
             <a href="/" class="round-btn">Home</a>
             <a href="/teams" class="round-btn">Teams</a>
@@ -45,6 +59,23 @@
         (function () {
             var players = [];
             var boxContent = { 'label-victor': '0', 'label-skittles': '0', 'label-maverick': '0' };
+            function getScore(team) {
+                var s = localStorage.getItem('jeopardy-score-' + team);
+                return s === null ? 0 : parseInt(s, 10) || 0;
+            }
+            function initScoresToZero() {
+                ['vic', 'skittles', 'maverick'].forEach(function (team) {
+                    if (localStorage.getItem('jeopardy-score-' + team) === null) {
+                        localStorage.setItem('jeopardy-score-' + team, '0');
+                    }
+                });
+            }
+            function refreshHeaderScoreboard() {
+                ['vic', 'skittles', 'maverick'].forEach(function (team) {
+                    var el = document.getElementById('score-' + team);
+                    if (el) el.textContent = '$' + getScore(team);
+                });
+            }
             function showTextBoxForBlackBox(blackBoxEl) {
                 var labelId = blackBoxEl.getAttribute('data-label');
                 var input = document.getElementById('podium-input');
@@ -141,6 +172,21 @@
                 var labelId = disp.getAttribute('data-for');
                 disp.textContent = boxContent[labelId] || '0';
                 disp.classList.add('podium-text-display-visible');
+            });
+            function clearScoresIfServerRestarted() {
+                return fetch('/api/boot-id').then(function (r) { return r.json(); }).then(function (data) {
+                    var stored = localStorage.getItem('jeopardy-boot-id');
+                    if (stored !== data.boot_id) {
+                        ['vic', 'skittles', 'maverick'].forEach(function (team) {
+                            localStorage.setItem('jeopardy-score-' + team, '0');
+                        });
+                        localStorage.setItem('jeopardy-boot-id', data.boot_id);
+                    }
+                });
+            }
+            clearScoresIfServerRestarted().then(function () {
+                initScoresToZero();
+                refreshHeaderScoreboard();
             });
             document.getElementById('label-skittles').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-skittles'); });
             document.getElementById('label-maverick').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-maverick'); });

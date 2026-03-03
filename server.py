@@ -1,7 +1,9 @@
-from flask import Flask, send_file, send_from_directory
+from flask import Flask, send_file, send_from_directory, jsonify
 import json_converter
+import time
 
 app = Flask(__name__)
+BOOT_ID = str(time.time())
 
 @app.route('/')
 def index():
@@ -38,6 +40,10 @@ def answers_json():
 @app.route('/players.json')
 def players_json():
     return send_file('players.json', mimetype='application/json')
+
+@app.route('/api/boot-id')
+def boot_id():
+    return jsonify({'boot_id': BOOT_ID})
 
 if __name__ == '__main__':
     json_converter.convert_to_json()

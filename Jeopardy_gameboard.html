@@ -83,12 +83,22 @@
                 return 'Jeopardy';
             })();
 
-            fetch('/answers.json')
-                .then(function (res) { return res.json(); })
-                .then(function (data) {
-                    var roundData = data.categories && data.categories[roundKey];
-                    if (!roundData) return;
-                    var categoryNames = Object.keys(roundData);
+            Promise.all([
+                fetch('/api/boot-id').then(function (r) { return r.json(); }),
+                fetch('/answers.json').then(function (r) { return r.json(); })
+            ]).then(function (results) {
+                var bootData = results[0];
+                var data = results[1];
+                var stored = localStorage.getItem('jeopardy-boot-id');
+                if (stored !== bootData.boot_id) {
+                    ['vic', 'skittles', 'maverick'].forEach(function (team) {
+                        localStorage.setItem('jeopardy-score-' + team, '0');
+                    });
+                    localStorage.setItem('jeopardy-boot-id', bootData.boot_id);
+                }
+                var roundData = data.categories && data.categories[roundKey];
+                if (!roundData) return;
+                var categoryNames = Object.keys(roundData);
 
                     var headers = document.querySelectorAll('body.gameboard thead th');
                     headers.forEach(function (th, i) {
@@ -128,8 +138,23 @@
                     var modalText = document.getElementById('clueModalText');
                     var closeBtn = modal && modal.querySelector('.clue-modal-close');
                     var activeClueCell = null;
-                    var scores = { vic: 0, skittles: 0, maverick: 0 };
+                    function getStoredScore(team) {
+                        var s = localStorage.getItem('jeopardy-score-' + team);
+                        return s === null ? 0 : parseInt(s, 10) || 0;
+                    }
+                    function setStoredScore(team, value) {
+                        localStorage.setItem('jeopardy-score-' + team, String(value));
+                    }
+                    var scores = {
+                        vic: getStoredScore('vic'),
+                        skittles: getStoredScore('skittles'),
+                        maverick: getStoredScore('maverick')
+                    };
                     var currentClueValue = 0;
+                    ['vic', 'skittles', 'maverick'].forEach(function (team) {
+                        var el = document.getElementById('score-' + team);
+                        if (el) el.textContent = '$' + scores[team];
+                    });
 
                     function parseValue(valueKey) {
                         var str = String(valueKey || '').replace(/[^0-9]/g, '');
@@ -139,6 +164,7 @@
                     function updateScoreboard(team, delta) {
                         if (scores[team] === undefined) return;
                         scores[team] += delta;
+                        setStoredScore(team, scores[team]);
                         var el = document.getElementById('score-' + team);
                         if (el) el.textContent = '$' + scores[team];
                     }
