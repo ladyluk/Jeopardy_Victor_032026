@@ -258,8 +258,8 @@
                 var tc = document.querySelector('.teams-container');
                 if (tc) tc.classList.add('final-revealed');
             }
-            document.getElementById('label-skittles').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-skittles'); });
-            document.getElementById('label-maverick').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-maverick'); });
+            document.getElementById('label-skittles').addEventListener('click', function (e) { e.preventDefault(); showPlayers('players-skittles'); });
+            document.getElementById('label-maverick').addEventListener('click', function (e) { e.preventDefault(); showPlayers('players-maverick'); });
             fetch('/players.json').then(function (r) { return r.json(); }).then(function (data) {
                 players = data.players || [];
             });
