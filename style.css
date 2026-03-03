@@ -100,6 +100,66 @@ body.teams .gameboard-header {
     transform: translate(-50%, 0);
 }
 
+.teams-container .podium-black-box {
+    position: absolute;
+    z-index: 3;
+    width: 15%;
+    height: 6%;
+    cursor: text;
+    background-color: rgba(0, 0, 0, 0.35);
+}
+.teams-container .podium-black-box:nth-of-type(1) {
+    left: 21%;
+    top: 40%;
+    transform: translate(-50%, 0);
+}
+.teams-container .podium-black-box:nth-of-type(2) {
+    left: 49.5%;
+    top: 40%;
+    transform: translate(-50%, 0);
+}
+.teams-container .podium-black-box:nth-of-type(3) {
+    left: 78%;
+    top: 40%;
+    transform: translate(-50%, 0);
+}
+
+.teams-container .podium-text-display {
+    position: absolute;
+    z-index: 6;
+    width: 15%;
+    height: 6%;
+    left: 0;
+    top: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(0.75rem, 2.5vw, 1.5rem);
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    pointer-events: none;
+}
+.teams-container .podium-text-display.podium-text-display-visible {
+    display: flex;
+}
+.teams-container .podium-text-display[data-for="label-victor"] {
+    left: 21%;
+    top: 40%;
+    transform: translate(-50%, 0);
+}
+.teams-container .podium-text-display[data-for="label-skittles"] {
+    left: 49.5%;
+    top: 40%;
+    transform: translate(-50%, 0);
+}
+.teams-container .podium-text-display[data-for="label-maverick"] {
+    left: 78%;
+    top: 40%;
+    transform: translate(-50%, 0);
+}
+
 .teams-container .podium-1 {
     left: 21%;
     top: 63%;
@@ -119,6 +179,31 @@ body.teams .gameboard-header {
 .teams-container .podium-label.clickable-label {
     pointer-events: auto;
     cursor: pointer;
+}
+
+.teams-container .podium-input {
+    position: absolute;
+    z-index: 100;
+    margin: 0;
+    padding: 0.2em 0.4em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(0.75rem, 2.5vw, 1.5rem);
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    background-color: #333;
+    border: 2px solid #333;
+    border-radius: 4px;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.teams-container .podium-input.podium-input-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .teams-container .players-box {

@@ -24,9 +24,16 @@
             <img src="images/contestants/Skittles.png" alt="Skittles" class="contestant-photo contestant-2">
             <img src="images/contestants/Maverick.png" alt="Maverick" class="contestant-photo contestant-3">
             <img src="images/jeopardy_background_pics/podium.png" alt="" class="podium-png">
-            <span class="podium-label podium-1">Victor</span>
+            <div class="podium-black-box" id="blackbox-1" data-label="label-victor" role="button" tabindex="0" aria-label="Type team name"></div>
+            <div class="podium-black-box" id="blackbox-2" data-label="label-skittles" role="button" tabindex="0" aria-label="Type team name"></div>
+            <div class="podium-black-box" id="blackbox-3" data-label="label-maverick" role="button" tabindex="0" aria-label="Type team name"></div>
+            <span class="podium-text-display" id="display-victor" data-for="label-victor"></span>
+            <span class="podium-text-display" id="display-skittles" data-for="label-skittles"></span>
+            <span class="podium-text-display" id="display-maverick" data-for="label-maverick"></span>
+            <span class="podium-label podium-1" id="label-victor">Victor</span>
             <span class="podium-label podium-2 clickable-label" id="label-skittles" role="button" tabindex="0">Skittles</span>
             <span class="podium-label podium-3 clickable-label" id="label-maverick" role="button" tabindex="0">Maverick</span>
+            <input type="text" id="podium-input" class="podium-input" aria-hidden="true" autocomplete="off">
             <div class="players-box players-box-skittles" id="players-skittles" aria-hidden="true"></div>
             <div class="players-box players-box-maverick" id="players-maverick" aria-hidden="true"></div>
         </div>
@@ -34,6 +41,51 @@
     <script>
         (function () {
             var players = [];
+            var boxContent = { 'label-victor': '', 'label-skittles': '', 'label-maverick': '' };
+            function showTextBoxForBlackBox(blackBoxEl) {
+                var labelId = blackBoxEl.getAttribute('data-label');
+                var input = document.getElementById('podium-input');
+                if (!input) return;
+                var container = blackBoxEl.closest('.teams-container');
+                if (!container) return;
+                var cRect = container.getBoundingClientRect();
+                var bRect = blackBoxEl.getBoundingClientRect();
+                input.value = boxContent[labelId] || '';
+                var displayEl = container.querySelector('.podium-text-display[data-for="' + labelId + '"]');
+                if (displayEl) displayEl.classList.remove('podium-text-display-visible');
+                input.style.left = (bRect.left - cRect.left) + 'px';
+                input.style.top = (bRect.top - cRect.top) + 'px';
+                input.style.width = bRect.width + 'px';
+                input.style.height = bRect.height + 'px';
+                input.classList.add('podium-input-visible');
+                input.setAttribute('aria-hidden', 'false');
+                input.dataset.forLabel = labelId;
+                input.focus();
+                function commit(save) {
+                    var forLabel = input.dataset.forLabel;
+                    if (save && forLabel) {
+                        boxContent[forLabel] = input.value;
+                        var disp = container.querySelector('.podium-text-display[data-for="' + forLabel + '"]');
+                        if (disp) {
+                            disp.textContent = boxContent[forLabel];
+                            disp.classList.add('podium-text-display-visible');
+                        }
+                    }
+                    input.classList.remove('podium-input-visible');
+                    input.setAttribute('aria-hidden', 'true');
+                    input.removeAttribute('data-for-label');
+                    input.style.height = '';
+                    input.removeEventListener('blur', onBlur);
+                    input.removeEventListener('keydown', onKey);
+                }
+                function onBlur() { commit(true); }
+                function onKey(e) {
+                    if (e.key === 'Enter') { e.preventDefault(); commit(true); }
+                    if (e.key === 'Escape') { e.preventDefault(); commit(false); }
+                }
+                input.addEventListener('blur', onBlur);
+                input.addEventListener('keydown', onKey);
+            }
             function getRandomPlayers(count, exclude) {
                 var excludeSet = (exclude && exclude.length) ? {} : null;
                 if (excludeSet) exclude.forEach(function (n) { excludeSet[n] = true; });
@@ -76,16 +128,16 @@
                     box.classList.remove('players-box-visible');
                 }
             }
+            document.querySelectorAll('.podium-black-box').forEach(function (box) {
+                box.addEventListener('click', function () { showTextBoxForBlackBox(box); });
+                box.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showTextBoxForBlackBox(box); }
+                });
+            });
+            document.getElementById('label-skittles').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-skittles'); });
+            document.getElementById('label-maverick').addEventListener('dblclick', function (e) { e.preventDefault(); showPlayers('players-maverick'); });
             fetch('/players.json').then(function (r) { return r.json(); }).then(function (data) {
                 players = data.players || [];
-                document.getElementById('label-skittles').addEventListener('click', function () { showPlayers('players-skittles'); });
-                document.getElementById('label-skittles').addEventListener('keydown', function (e) {
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showPlayers('players-skittles'); }
-                });
-                document.getElementById('label-maverick').addEventListener('click', function () { showPlayers('players-maverick'); });
-                document.getElementById('label-maverick').addEventListener('keydown', function (e) {
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showPlayers('players-maverick'); }
-                });
             });
         })();
     </script>
