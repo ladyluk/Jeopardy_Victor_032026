@@ -6,6 +6,7 @@ app = Flask(__name__)
 BOOT_ID = str(time.time())
 
 @app.route('/')
+@app.route('/main')
 def index():
     return send_file('Jeopardy_main.html')
 
