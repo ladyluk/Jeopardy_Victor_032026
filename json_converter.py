@@ -44,7 +44,7 @@ def convert_to_json():
                 }
                 for _, row in df.iterrows():
                     content = row[category]
-                    if content.find(/n) != -1 and result["categories"][round_name][category]["type"] == "text":
+                    if content.find('/n') != -1 and result["categories"][round_name][category]["type"] == "text":
                         index_pos = content.index('\n')
                         label = content[:index_pos]
                         if label == "daily double":
@@ -71,9 +71,11 @@ def convert_to_json():
                         for i, file in enumerate(directory.iterdir()):
                             if content in file.name:
                                 images.append(file.name)
+                        result["categories"][round_name][category]["content"][row["Value"]] = content  
                     elif category == "Spotify Wrap-Up":
                         result["categories"][round_name][category]["type"] = "audio"
                         result["categories"][round_name][category]["audio_file_name"] = f"audio/{content}.mp3"
+                        result["categories"][round_name][category]["content"][row["Value"]] = content  
                     elif category == "The 'not-so fairweather' Office fans":
                         index_pos = content.index('\n')
                         content= content[:index_pos]
