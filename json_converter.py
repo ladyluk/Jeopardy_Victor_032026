@@ -73,20 +73,20 @@ def convert_to_json():
                         result["categories"][round_name][category]["content"][row["Value"]]["Media_type"] = "audio"
                         result["categories"][round_name][category]["content"][row["Value"]]["audio_file_name"] = f"audio/{clue}.mp3"
                         result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = ""  
-                    # elif category == "The 'not-so fairweather' Office fans":
-                    #     index_pos = content.index('\n')
-                    #     content= content[:index_pos]
-                    #     src = content[index_pos+1:]
-                    #     result["categories"][round_name][category]["type"] = "video"   
-                    #     result["categories"][round_name][category]["video_src"] = src
-                    #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
-                    # else:
-                    #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
-                    if category == "Spotify Wrap-Up":
+                    elif category == "The 'not-so fairweather' Office fans":
+                        src = clue
+                        clue = label
+                        result["categories"][round_name][category]["content"][row["Value"]]["Media_type"] = "video"   
+                        result["categories"][round_name][category]["content"][row["Value"]]["video_url"] = src
+                        result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = clue                        
+                    else:
+                        result["categories"][round_name][category]["content"][row["Value"]]["Clue"]  = clue                        
+                    if category == "The 'not-so fairweather' Office fans":
                         print("value: ", row["Value"])
                         print("media_type: ", result["categories"][round_name][category]["content"][row["Value"]]["Media_type"])
                         print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
-                        print("audio_file_name: ", result["categories"][round_name][category]["content"][row["Value"]]["audio_file_name"])
+                        # print("audio_file_name: ", result["categories"][round_name][category]["content"][row["Value"]]["audio_file_name"])
+                        print("video_url: ", result["categories"][round_name][category]["content"][row["Value"]]["video_url"])
                         # print("image_src: ", result["categories"][round_name][category]["content"][row["Value"]]["image_src"])
                         print("daily_double: ", result["categories"][round_name][category]["content"][row["Value"]]["Daily_double"], '\n')
 
