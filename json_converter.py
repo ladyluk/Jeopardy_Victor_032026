@@ -54,17 +54,12 @@ def convert_to_json():
                             media_type = "text"
                     content = {"Clue": clue, "Media_type": media_type, "Daily_double": daily_double}
                     result["categories"][round_name][category]["content"][row["Value"]] = content
-                    if category == "Nippon ga ichiban":
-                        print("value: ", row["Value"])
-                        print("media_type: ", result["categories"][round_name][category]["content"][row["Value"]]["Media_type"])
-                        print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
-                        print("daily_double: ", result["categories"][round_name][category]["content"][row["Value"]]["Daily_double"], '\n')
-                    # if result["categories"][round_name][category]["media_type"] == "image":
-                    #     index_pos = content.index('\n')
-                    #     src = content[:index_pos]
-                    #     content = content[index_pos+1:]
-                    #     result["categories"][round_name][category]["image_src"] = src
-                    #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
+                    if media_type == "image":
+                        index_pos = clue.index('\n')
+                        src = clue[:index_pos]
+                        clue = clue[index_pos+1:]
+                        result["categories"][round_name][category]["content"][row["Value"]]["image_src"] = src
+                        result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = clue                        
                     # elif category == "Jet-Setters":
                     #     result["categories"][round_name][category]["type"] = "image"
                     #     directory = Path("images/trip_pics")
@@ -86,6 +81,11 @@ def convert_to_json():
                     #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
                     # else:
                     #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
+                    if category == "Nippon ga ichiban":
+                        print("value: ", row["Value"])
+                        print("media_type: ", result["categories"][round_name][category]["content"][row["Value"]]["Media_type"])
+                        print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
+                        print("daily_double: ", result["categories"][round_name][category]["content"][row["Value"]]["Daily_double"], '\n')
 
     # print(json.dumps(result, indent=2))
 
