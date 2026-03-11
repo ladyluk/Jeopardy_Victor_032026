@@ -13,7 +13,7 @@ def convert_to_json():
     for round_name, df in sheets.items():
         # type: audio , video , image , text
         # daily double: true , false
-        # print(round_name)
+        # print("round_name: ", round_name)
         color = ""
         if round_name == "Vic Jeopardy":
             color = "orange"
@@ -26,67 +26,70 @@ def convert_to_json():
             }
         else:
             for category in df.columns[1:]:
-                type = "text"
                 daily_double = False
-                # if category == "Jet-Setters":
-                #     type = "image"
-                # if category == "Spotify Wrap-Up":
-                #     type = "audio"
-                # if category == "The 'not-so fairweather' Office fans":
-                #     type = "video"
                 if df.columns[-1] == category:
                     color = "orange"
                 result["categories"][round_name][category] = {
                     "color": color,
-                    "type": type,
-                    "daily_double": daily_double,
                     "content": {}
                 }
                 for _, row in df.iterrows():
-                    content = row[category]
-                    if content.find('/n') != -1 and result["categories"][round_name][category]["type"] == "text":
-                        index_pos = content.index('\n')
-                        label = content[:index_pos]
+                    clue = row[category]
+                    label = ""
+                    media_type = "text"
+                    daily_double = False
+                    if clue.find('\n') != -1:
+                        index_pos = clue.index('\n')
+                        label = clue[:index_pos]
+                        clue = clue[index_pos+1:]
                         if label == "daily double":
                             daily_double = True
                         elif label == "image":
-                            type = "image"
+                            media_type = "image"
                         elif label == "audio":
-                            type = "audio"
+                            media_type = "audio"
                         elif label == "video":
-                            type = "video"
+                            media_type = "video"
                         else:
-                            type = "text"
-                        content = content[index_pos+1:]
-                    elif type == "image":
-                        index_pos = content.index('\n')
-                        src = content[:index_pos]
-                        content = content[index_pos+1:]
-                        result["categories"][round_name][category]["image_src"] = src
-                        result["categories"][round_name][category]["content"][row["Value"]] = content                        
-                    elif category == "Jet-Setters":
-                        result["categories"][round_name][category]["type"] = "image"
-                        directory = Path("images/trip_pics")
-                        images = []
-                        for i, file in enumerate(directory.iterdir()):
-                            if content in file.name:
-                                images.append(file.name)
-                        result["categories"][round_name][category]["content"][row["Value"]] = content  
-                    elif category == "Spotify Wrap-Up":
-                        result["categories"][round_name][category]["type"] = "audio"
-                        result["categories"][round_name][category]["audio_file_name"] = f"audio/{content}.mp3"
-                        result["categories"][round_name][category]["content"][row["Value"]] = content  
-                    elif category == "The 'not-so fairweather' Office fans":
-                        index_pos = content.index('\n')
-                        content= content[:index_pos]
-                        src = content[index_pos+1:]
-                        result["categories"][round_name][category]["type"] = "video"   
-                        result["categories"][round_name][category]["video_src"] = src
-                        result["categories"][round_name][category]["content"][row["Value"]] = content                        
-                    else:
-                        result["categories"][round_name][category]["content"][row["Value"]] = content                        
+                            media_type = "text"
+                    content = {"Clue": clue, "Media_type": media_type, "Daily_double": daily_double}
+                    result["categories"][round_name][category]["content"][row["Value"]] = content
+                    if category == "Nippon ga ichiban":
+                        print("value: ", row["Value"])
+                        print("media_type: ", result["categories"][round_name][category]["content"][row["Value"]]["Media_type"])
+                        print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
+                        print("daily_double: ", result["categories"][round_name][category]["content"][row["Value"]]["Daily_double"], '\n')
+                    # if result["categories"][round_name][category]["media_type"] == "image":
+                    #     index_pos = content.index('\n')
+                    #     src = content[:index_pos]
+                    #     content = content[index_pos+1:]
+                    #     result["categories"][round_name][category]["image_src"] = src
+                    #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
+                    # elif category == "Jet-Setters":
+                    #     result["categories"][round_name][category]["type"] = "image"
+                    #     directory = Path("images/trip_pics")
+                    #     images = []
+                    #     for i, file in enumerate(directory.iterdir()):
+                    #         if content in file.name:
+                    #             images.append(file.name)
+                    #     result["categories"][round_name][category]["content"][row["Value"]] = content  
+                    # elif category == "Spotify Wrap-Up":
+                    #     result["categories"][round_name][category]["type"] = "audio"
+                    #     result["categories"][round_name][category]["audio_file_name"] = f"audio/{content}.mp3"
+                    #     result["categories"][round_name][category]["content"][row["Value"]] = content  
+                    # elif category == "The 'not-so fairweather' Office fans":
+                    #     index_pos = content.index('\n')
+                    #     content= content[:index_pos]
+                    #     src = content[index_pos+1:]
+                    #     result["categories"][round_name][category]["type"] = "video"   
+                    #     result["categories"][round_name][category]["video_src"] = src
+                    #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
+                    # else:
+                    #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
 
     # print(json.dumps(result, indent=2))
 
     with open("answers.json", "w") as f:
         json.dump(result, f)
+
+convert_to_json()
