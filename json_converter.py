@@ -60,14 +60,15 @@ def convert_to_json():
                         clue = clue[index_pos+1:]
                         result["categories"][round_name][category]["content"][row["Value"]]["image_src"] = src
                         result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = clue                        
-                    # elif category == "Jet-Setters":
-                    #     result["categories"][round_name][category]["type"] = "image"
-                    #     directory = Path("images/trip_pics")
-                    #     images = []
-                    #     for i, file in enumerate(directory.iterdir()):
-                    #         if content in file.name:
-                    #             images.append(file.name)
-                    #     result["categories"][round_name][category]["content"][row["Value"]] = content  
+                    elif category == "Jet-Setters":
+                        result["categories"][round_name][category]["content"][row["Value"]]["Media_type"] = "image"
+                        directory = Path("images/trip_pics")
+                        images = []
+                        for i, file in enumerate(directory.iterdir()):
+                            if clue in file.name:
+                                images.append(file.name)
+                        result["categories"][round_name][category]["content"][row["Value"]]["image_src"] = images  
+                        result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = ""
                     # elif category == "Spotify Wrap-Up":
                     #     result["categories"][round_name][category]["type"] = "audio"
                     #     result["categories"][round_name][category]["audio_file_name"] = f"audio/{content}.mp3"
@@ -81,10 +82,11 @@ def convert_to_json():
                     #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
                     # else:
                     #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
-                    if category == "Nippon ga ichiban":
+                    if category == "Jet-Setters":
                         print("value: ", row["Value"])
                         print("media_type: ", result["categories"][round_name][category]["content"][row["Value"]]["Media_type"])
-                        print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
+                        # print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
+                        print("image_src: ", result["categories"][round_name][category]["content"][row["Value"]]["image_src"])
                         print("daily_double: ", result["categories"][round_name][category]["content"][row["Value"]]["Daily_double"], '\n')
 
     # print(json.dumps(result, indent=2))
