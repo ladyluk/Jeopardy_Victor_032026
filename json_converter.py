@@ -69,10 +69,10 @@ def convert_to_json():
                                 images.append(file.name)
                         result["categories"][round_name][category]["content"][row["Value"]]["image_src"] = images  
                         result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = ""
-                    # elif category == "Spotify Wrap-Up":
-                    #     result["categories"][round_name][category]["type"] = "audio"
-                    #     result["categories"][round_name][category]["audio_file_name"] = f"audio/{content}.mp3"
-                    #     result["categories"][round_name][category]["content"][row["Value"]] = content  
+                    elif category == "Spotify Wrap-Up":
+                        result["categories"][round_name][category]["content"][row["Value"]]["Media_type"] = "audio"
+                        result["categories"][round_name][category]["content"][row["Value"]]["audio_file_name"] = f"audio/{clue}.mp3"
+                        result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = ""  
                     # elif category == "The 'not-so fairweather' Office fans":
                     #     index_pos = content.index('\n')
                     #     content= content[:index_pos]
@@ -82,11 +82,12 @@ def convert_to_json():
                     #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
                     # else:
                     #     result["categories"][round_name][category]["content"][row["Value"]] = content                        
-                    if category == "Jet-Setters":
+                    if category == "Spotify Wrap-Up":
                         print("value: ", row["Value"])
                         print("media_type: ", result["categories"][round_name][category]["content"][row["Value"]]["Media_type"])
-                        # print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
-                        print("image_src: ", result["categories"][round_name][category]["content"][row["Value"]]["image_src"])
+                        print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
+                        print("audio_file_name: ", result["categories"][round_name][category]["content"][row["Value"]]["audio_file_name"])
+                        # print("image_src: ", result["categories"][round_name][category]["content"][row["Value"]]["image_src"])
                         print("daily_double: ", result["categories"][round_name][category]["content"][row["Value"]]["Daily_double"], '\n')
 
     # print(json.dumps(result, indent=2))
