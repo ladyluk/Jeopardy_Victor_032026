@@ -54,6 +54,13 @@
                         <button type="button" class="clue-modal-btn clue-modal-btn-win" aria-label="Correct">&check;</button>
                         <button type="button" class="clue-modal-btn clue-modal-btn-lose" aria-label="Wrong">&times;</button>
                     </div>
+                    <div class="clue-modal-daily-double-wrap">
+                        <input type="text" class="clue-modal-daily-double-input" placeholder="">
+                        <div class="clue-modal-daily-double-btns">
+                            <button type="button" class="clue-modal-daily-double-btn clue-modal-daily-double-minus" aria-label="Subtract from score">−</button>
+                            <button type="button" class="clue-modal-daily-double-btn clue-modal-daily-double-plus" aria-label="Add to score">+</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="clue-modal-team" data-team="skittles">
                     <img src="images/contestants/Skittles.png" alt="Skittles" class="clue-modal-team-img">
@@ -61,12 +68,26 @@
                         <button type="button" class="clue-modal-btn clue-modal-btn-win" aria-label="Correct">&check;</button>
                         <button type="button" class="clue-modal-btn clue-modal-btn-lose" aria-label="Wrong">&times;</button>
                     </div>
+                    <div class="clue-modal-daily-double-wrap">
+                        <input type="text" class="clue-modal-daily-double-input" placeholder="">
+                        <div class="clue-modal-daily-double-btns">
+                            <button type="button" class="clue-modal-daily-double-btn clue-modal-daily-double-minus" aria-label="Subtract from score">−</button>
+                            <button type="button" class="clue-modal-daily-double-btn clue-modal-daily-double-plus" aria-label="Add to score">+</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="clue-modal-team" data-team="maverick">
                     <img src="images/contestants/Maverick.png" alt="Maverick" class="clue-modal-team-img">
                     <div class="clue-modal-buttons">
                         <button type="button" class="clue-modal-btn clue-modal-btn-win" aria-label="Correct">&check;</button>
                         <button type="button" class="clue-modal-btn clue-modal-btn-lose" aria-label="Wrong">&times;</button>
+                    </div>
+                    <div class="clue-modal-daily-double-wrap">
+                        <input type="text" class="clue-modal-daily-double-input" placeholder="">
+                        <div class="clue-modal-daily-double-btns">
+                            <button type="button" class="clue-modal-daily-double-btn clue-modal-daily-double-minus" aria-label="Subtract from score">−</button>
+                            <button type="button" class="clue-modal-daily-double-btn clue-modal-daily-double-plus" aria-label="Add to score">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -196,7 +217,7 @@
                     var dailyDoubleModal = document.getElementById('dailyDoubleModal');
                     var pendingClueAfterDailyDouble = null;
 
-                    function showClue(cell, categoryName, valueKey) {
+                    function showClue(cell, categoryName, valueKey, isDailyDouble) {
                         var cat = roundData[categoryName];
                         var contentObj = cat && cat.content;
                         var item = contentObj && contentObj[valueKey];
@@ -205,6 +226,12 @@
                             activeClueCell = cell;
                             currentClueValue = parseValue(valueKey);
                             modalText.textContent = text;
+                            if (isDailyDouble) {
+                                modal.classList.add('clue-modal-daily-double');
+                                modal.querySelectorAll('.clue-modal-daily-double-input').forEach(function (input) { input.value = ''; });
+                            } else {
+                                modal.classList.remove('clue-modal-daily-double');
+                            }
                             modal.classList.add('clue-modal-open');
                             modal.setAttribute('aria-hidden', 'false');
                         }
@@ -228,7 +255,7 @@
                         if (pendingClueAfterDailyDouble) {
                             var p = pendingClueAfterDailyDouble;
                             pendingClueAfterDailyDouble = null;
-                            showClue(p.cell, p.categoryName, p.valueKey);
+                            showClue(p.cell, p.categoryName, p.valueKey, true);
                         }
                     }
 
@@ -238,6 +265,19 @@
                         var loseBtn = wrap.querySelector('.clue-modal-btn-lose');
                         if (winBtn) winBtn.addEventListener('click', function () { updateScoreboard(team, currentClueValue); hideClue(); });
                         if (loseBtn) loseBtn.addEventListener('click', function () { updateScoreboard(team, -currentClueValue); });
+                        var ddWrap = wrap.querySelector('.clue-modal-daily-double-wrap');
+                        if (ddWrap) {
+                            var input = ddWrap.querySelector('.clue-modal-daily-double-input');
+                            var minusBtn = ddWrap.querySelector('.clue-modal-daily-double-minus');
+                            var plusBtn = ddWrap.querySelector('.clue-modal-daily-double-plus');
+                            function parseInputValue() {
+                                var raw = input ? input.value.replace(/[$,]/g, '').trim() : '';
+                                var n = parseInt(raw, 10);
+                                return isNaN(n) ? 0 : n;
+                            }
+                            if (minusBtn) minusBtn.addEventListener('click', function () { updateScoreboard(team, -parseInputValue()); });
+                            if (plusBtn) plusBtn.addEventListener('click', function () { updateScoreboard(team, parseInputValue()); });
+                        }
                     });
 
                     function hideClue() {
@@ -252,7 +292,7 @@
                             activeClueCell = null;
                         }
                         if (modal) {
-                            modal.classList.remove('clue-modal-open');
+                            modal.classList.remove('clue-modal-open', 'clue-modal-daily-double');
                             modal.setAttribute('aria-hidden', 'true');
                         }
                     }

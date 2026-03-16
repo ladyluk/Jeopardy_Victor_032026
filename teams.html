@@ -49,11 +49,9 @@
             <span class="podium-label podium-3 clickable-label" id="label-maverick" role="button" tabindex="0">Maverick</span>
             <input type="text" id="podium-input" class="podium-input" aria-hidden="true" autocomplete="off">
             <button type="button" class="podium-add-btn podium-add-btn-1" data-for="label-victor" aria-label="Add">+</button>
-            <button type="button" class="podium-undo-btn podium-undo-btn-1" data-for="label-victor" aria-label="Undo sum">Undo</button>
             <button type="button" class="podium-add-btn podium-add-btn-2" data-for="label-skittles" aria-label="Add">+</button>
-            <button type="button" class="podium-undo-btn podium-undo-btn-2" data-for="label-skittles" aria-label="Undo sum">Undo</button>
             <button type="button" class="podium-add-btn podium-add-btn-3" data-for="label-maverick" aria-label="Add">+</button>
-            <button type="button" class="podium-undo-btn podium-undo-btn-3" data-for="label-maverick" aria-label="Undo sum">Undo</button>
+            <button type="button" class="podium-undo-btn podium-undo-btn-single" id="podium-undo-single" aria-label="Undo last calculation">Undo</button>
             <div class="players-box players-box-skittles" id="players-skittles" aria-hidden="true"></div>
             <div class="players-box players-box-maverick" id="players-maverick" aria-hidden="true"></div>
         </div>
@@ -62,7 +60,7 @@
         (function () {
             var players = [];
             var boxContent = {};
-            var undoStack = { 'label-victor': [], 'label-skittles': [], 'label-maverick': [] };
+            var globalUndoStack = [];
             (function () {
                 var keys = ['label-victor', 'label-skittles', 'label-maverick'];
                 keys.forEach(function (labelId) {
@@ -103,7 +101,7 @@
                 var scoreboardVal = getScore(team);
                 var textboxVal = parseAmount(boxContent[labelId]);
                 var total = scoreboardVal + textboxVal;
-                undoStack[labelId].push(boxContent[labelId]);
+                globalUndoStack.push({ labelId: labelId, prev: boxContent[labelId] });
                 boxContent[labelId] = String(total);
                 setStoredBoxContent(labelId, boxContent[labelId]);
                 var disp = document.querySelector('.podium-text-display[data-for="' + labelId + '"]');
@@ -114,10 +112,11 @@
                 var input = document.getElementById('podium-input');
                 if (input && input.dataset.forLabel === labelId) input.value = String(total);
             }
-            function onUndoClick(btn) {
-                var labelId = btn.getAttribute('data-for');
-                if (!labelId || !undoStack[labelId].length) return;
-                var prev = undoStack[labelId].pop();
+            function onUndoClick() {
+                if (!globalUndoStack.length) return;
+                var entry = globalUndoStack.pop();
+                var labelId = entry.labelId;
+                var prev = entry.prev;
                 boxContent[labelId] = prev;
                 setStoredBoxContent(labelId, prev);
                 var disp = document.querySelector('.podium-text-display[data-for="' + labelId + '"]');
@@ -224,9 +223,8 @@
             document.querySelectorAll('.podium-add-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () { onAddClick(btn); });
             });
-            document.querySelectorAll('.podium-undo-btn').forEach(function (btn) {
-                btn.addEventListener('click', function () { onUndoClick(btn); });
-            });
+            var undoBtn = document.getElementById('podium-undo-single');
+            if (undoBtn) undoBtn.addEventListener('click', onUndoClick);
             document.querySelectorAll('.podium-text-display').forEach(function (disp) {
                 var labelId = disp.getAttribute('data-for');
                 disp.textContent = boxContent[labelId] || '0';
@@ -245,6 +243,7 @@
                             var disp = document.querySelector('.podium-text-display[data-for="' + labelId + '"]');
                             if (disp) disp.textContent = '0';
                         });
+                        globalUndoStack.length = 0;
                         localStorage.removeItem('jeopardy-final-revealed');
                         localStorage.setItem('jeopardy-boot-id', data.boot_id);
                     }
