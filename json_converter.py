@@ -81,14 +81,14 @@ def convert_to_json():
                         result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = clue                        
                     else:
                         result["categories"][round_name][category]["content"][row["Value"]]["Clue"]  = clue                        
-                    if category == "The 'not-so fairweather' Office fans":
-                        print("value: ", row["Value"])
-                        print("media_type: ", result["categories"][round_name][category]["content"][row["Value"]]["Media_type"])
-                        print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
-                        # print("audio_file_name: ", result["categories"][round_name][category]["content"][row["Value"]]["audio_file_name"])
-                        print("video_url: ", result["categories"][round_name][category]["content"][row["Value"]]["video_url"])
-                        # print("image_src: ", result["categories"][round_name][category]["content"][row["Value"]]["image_src"])
-                        print("daily_double: ", result["categories"][round_name][category]["content"][row["Value"]]["Daily_double"], '\n')
+                    # if category == "The 'not-so fairweather' Office fans":
+                    #     print("value: ", row["Value"])
+                    #     print("media_type: ", result["categories"][round_name][category]["content"][row["Value"]]["Media_type"])
+                    #     print("clue: ", result["categories"][round_name][category]["content"][row["Value"]]["Clue"])
+                    #     # print("audio_file_name: ", result["categories"][round_name][category]["content"][row["Value"]]["audio_file_name"])
+                    #     print("video_url: ", result["categories"][round_name][category]["content"][row["Value"]]["video_url"])
+                    #     # print("image_src: ", result["categories"][round_name][category]["content"][row["Value"]]["image_src"])
+                    #     print("daily_double: ", result["categories"][round_name][category]["content"][row["Value"]]["Daily_double"], '\n')
 
     # print(json.dumps(result, indent=2))
 

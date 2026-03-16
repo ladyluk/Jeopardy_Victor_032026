@@ -193,8 +193,9 @@
                     function showClue(cell, categoryName, valueKey) {
                         var cat = roundData[categoryName];
                         var contentObj = cat && cat.content;
-                        var text = contentObj && contentObj[valueKey];
-                        if (modal && modalText && text !== undefined) {
+                        var item = contentObj && contentObj[valueKey];
+                        var text = item && (item.Clue !== undefined ? item.Clue : item.clue);
+                        if (modal && modalText && text !== undefined && text !== null) {
                             activeClueCell = cell;
                             currentClueValue = parseValue(valueKey);
                             modalText.textContent = text;
