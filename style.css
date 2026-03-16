@@ -207,14 +207,17 @@ body.teams .gameboard-header {
 }
 
 .teams-container .podium-add-btn,
+.teams-container .podium-subtract-btn,
 .teams-container .podium-undo-btn {
     visibility: hidden;
 }
 .teams-container.final-revealed .podium-add-btn,
+.teams-container.final-revealed .podium-subtract-btn,
 .teams-container.final-revealed .podium-undo-btn {
     visibility: visible;
 }
-.teams-container .podium-add-btn {
+.teams-container .podium-add-btn,
+.teams-container .podium-subtract-btn {
     position: absolute;
     z-index: 100;
     width: 2rem;
@@ -235,12 +238,24 @@ body.teams .gameboard-header {
     left: 30%;
     top: 40%;
 }
+.teams-container .podium-subtract-btn-1 {
+    left: 33%;
+    top: 40%;
+}
 .teams-container .podium-add-btn-2 {
     left: 58.5%;
     top: 40%;
 }
+.teams-container .podium-subtract-btn-2 {
+    left: 61.5%;
+    top: 40%;
+}
 .teams-container .podium-add-btn-3 {
     left: 87%;
+    top: 40%;
+}
+.teams-container .podium-subtract-btn-3 {
+    left: 90%;
     top: 40%;
 }
 
