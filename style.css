@@ -653,6 +653,31 @@ body.gameboard td.clue-cell:hover {
     background-color: #a00;
 }
 
+/* Daily Double overlay – show image first, click to reveal clue */
+.daily-double-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1001;
+    background-color: rgba(0, 0, 0, 0.85);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.daily-double-modal.daily-double-modal-open {
+    display: flex;
+}
+
+.daily-double-modal .daily-double-img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    pointer-events: none;
+}
+
 /* Begin button (main page) ΓÇô same size as .round-btn, different position */
 .begin-btn {
     box-sizing: border-box;

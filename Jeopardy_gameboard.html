@@ -73,6 +73,9 @@
             <button type="button" class="clue-modal-close" aria-label="Close">&times;</button>
         </div>
     </div>
+    <div id="dailyDoubleModal" class="daily-double-modal" aria-hidden="true" title="Click to continue to clue">
+        <img src="images/jeopardy_background_pics/Daily_Double.PNG" alt="Daily Double" class="daily-double-img">
+    </div>
     <script>
         (function () {
             var roundKey = (function () {
@@ -190,6 +193,9 @@
                         if (el) el.textContent = '$' + scores[team];
                     }
 
+                    var dailyDoubleModal = document.getElementById('dailyDoubleModal');
+                    var pendingClueAfterDailyDouble = null;
+
                     function showClue(cell, categoryName, valueKey) {
                         var cat = roundData[categoryName];
                         var contentObj = cat && cat.content;
@@ -201,6 +207,25 @@
                             modalText.textContent = text;
                             modal.classList.add('clue-modal-open');
                             modal.setAttribute('aria-hidden', 'false');
+                        }
+                    }
+
+                    function showDailyDoubleThenClue(cell, categoryName, valueKey) {
+                        pendingClueAfterDailyDouble = { cell: cell, categoryName: categoryName, valueKey: valueKey };
+                        if (dailyDoubleModal) {
+                            dailyDoubleModal.classList.add('daily-double-modal-open');
+                            dailyDoubleModal.setAttribute('aria-hidden', 'false');
+                        }
+                    }
+
+                    function hideDailyDoubleAndShowClue() {
+                        if (!dailyDoubleModal) return;
+                        dailyDoubleModal.classList.remove('daily-double-modal-open');
+                        dailyDoubleModal.setAttribute('aria-hidden', 'true');
+                        if (pendingClueAfterDailyDouble) {
+                            var p = pendingClueAfterDailyDouble;
+                            pendingClueAfterDailyDouble = null;
+                            showClue(p.cell, p.categoryName, p.valueKey);
                         }
                     }
 
@@ -233,9 +258,17 @@
                         cell.addEventListener('click', function () {
                             var cat = cell.getAttribute('data-category');
                             var val = cell.getAttribute('data-value');
-                            if (cat && val) showClue(cell, cat, val);
+                            if (!cat || !val) return;
+                            var catData = roundData[cat];
+                            var contentObj = catData && catData.content;
+                            var item = contentObj && contentObj[val];
+                            var isDailyDouble = item && (item.Daily_double === true || item.daily_double === true);
+                            if (isDailyDouble) showDailyDoubleThenClue(cell, cat, val);
+                            else showClue(cell, cat, val);
                         });
                     });
+
+                    if (dailyDoubleModal) dailyDoubleModal.addEventListener('click', hideDailyDoubleAndShowClue);
 
                     if (closeBtn) closeBtn.addEventListener('click', hideClue);
                     if (modal) modal.addEventListener('click', function (e) {
