@@ -34,7 +34,7 @@ def convert_to_json():
                     "content": {}
                 }
                 for _, row in df.iterrows():
-                    clue = row[category]
+                    clue = row[category].strip()
                     label = ""
                     media_type = "text"
                     daily_double = False

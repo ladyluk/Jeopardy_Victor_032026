@@ -210,12 +210,15 @@
                         }
                     }
 
+                    var dailyDoubleAudio = new Audio('audio/jeopardy-daily-double.mp3');
+
                     function showDailyDoubleThenClue(cell, categoryName, valueKey) {
                         pendingClueAfterDailyDouble = { cell: cell, categoryName: categoryName, valueKey: valueKey };
                         if (dailyDoubleModal) {
                             dailyDoubleModal.classList.add('daily-double-modal-open');
                             dailyDoubleModal.setAttribute('aria-hidden', 'false');
                         }
+                        if (dailyDoubleAudio) dailyDoubleAudio.play().catch(function () {});
                     }
 
                     function hideDailyDoubleAndShowClue() {
