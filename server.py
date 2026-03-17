@@ -48,4 +48,4 @@ def boot_id():
 
 if __name__ == '__main__':
     json_converter.convert_to_json()
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

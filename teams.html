@@ -63,14 +63,23 @@
         (function () {
             var players = [];
             var boxContent = {};
+            var pendingWager = {};
             var globalUndoStack = [];
-            (function () {
-                var keys = ['label-victor', 'label-skittles', 'label-maverick'];
-                keys.forEach(function (labelId) {
-                    var stored = localStorage.getItem('jeopardy-teams-box-' + labelId);
-                    boxContent[labelId] = stored !== null ? stored : '0';
+            function getTeamFromLabelId(labelId) {
+                return labelId === 'label-victor' ? 'vic' : labelId === 'label-skittles' ? 'skittles' : 'maverick';
+            }
+            function syncBoxToScore() {
+                ['label-victor', 'label-skittles', 'label-maverick'].forEach(function (labelId) {
+                    var team = getTeamFromLabelId(labelId);
+                    boxContent[labelId] = String(getScore(team));
+                    setStoredBoxContent(labelId, boxContent[labelId]);
+                    var disp = document.querySelector('.podium-text-display[data-for="' + labelId + '"]');
+                    if (disp) {
+                        disp.textContent = boxContent[labelId];
+                        disp.classList.add('podium-text-display-visible');
+                    }
                 });
-            })();
+            }
             function setStoredBoxContent(labelId, value) {
                 localStorage.setItem('jeopardy-teams-box-' + labelId, String(value));
             }
@@ -100,10 +109,10 @@
             function onAddClick(btn) {
                 var labelId = btn.getAttribute('data-for');
                 if (!labelId) return;
-                var team = labelId === 'label-victor' ? 'vic' : labelId === 'label-skittles' ? 'skittles' : 'maverick';
+                var team = getTeamFromLabelId(labelId);
                 var scoreboardVal = getScore(team);
-                var textboxVal = parseAmount(boxContent[labelId]);
-                var total = scoreboardVal + textboxVal;
+                var amount = parseAmount(pendingWager[labelId] || 0);
+                var total = scoreboardVal + amount;
                 globalUndoStack.push({
                     labelId: labelId,
                     team: team,
@@ -114,6 +123,7 @@
                 setStoredBoxContent(labelId, boxContent[labelId]);
                 setScore(team, total);
                 refreshHeaderScoreboard();
+                pendingWager[labelId] = '';
                 var disp = document.querySelector('.podium-text-display[data-for="' + labelId + '"]');
                 if (disp) {
                     disp.textContent = String(total);
@@ -125,10 +135,10 @@
             function onSubtractClick(btn) {
                 var labelId = btn.getAttribute('data-for');
                 if (!labelId) return;
-                var team = labelId === 'label-victor' ? 'vic' : labelId === 'label-skittles' ? 'skittles' : 'maverick';
+                var team = getTeamFromLabelId(labelId);
                 var scoreboardVal = getScore(team);
-                var textboxVal = parseAmount(boxContent[labelId]);
-                var total = scoreboardVal - textboxVal;
+                var amount = parseAmount(pendingWager[labelId] || 0);
+                var total = scoreboardVal - amount;
                 globalUndoStack.push({
                     labelId: labelId,
                     team: team,
@@ -139,6 +149,7 @@
                 setStoredBoxContent(labelId, boxContent[labelId]);
                 setScore(team, total);
                 refreshHeaderScoreboard();
+                pendingWager[labelId] = '';
                 var disp = document.querySelector('.podium-text-display[data-for="' + labelId + '"]');
                 if (disp) {
                     disp.textContent = String(total);
@@ -174,7 +185,8 @@
                 if (!container) return;
                 var cRect = container.getBoundingClientRect();
                 var bRect = blackBoxEl.getBoundingClientRect();
-                input.value = boxContent[labelId] || '0';
+                input.value = pendingWager[labelId] || '';
+                input.placeholder = 'Amount to add/subtract';
                 var displayEl = container.querySelector('.podium-text-display[data-for="' + labelId + '"]');
                 if (displayEl) displayEl.classList.remove('podium-text-display-visible');
                 input.style.left = (bRect.left - cRect.left) + 'px';
@@ -187,9 +199,8 @@
                 input.focus();
                 function commit(save) {
                     var forLabel = input.dataset.forLabel;
-                    if (save && forLabel) {
-                        boxContent[forLabel] = input.value;
-                        setStoredBoxContent(forLabel, boxContent[forLabel]);
+                    if (save && forLabel) pendingWager[forLabel] = input.value;
+                    if (forLabel) {
                         var disp = container.querySelector('.podium-text-display[data-for="' + forLabel + '"]');
                         if (disp) {
                             disp.textContent = boxContent[forLabel];
@@ -267,6 +278,7 @@
             });
             var undoBtn = document.getElementById('podium-undo-single');
             if (undoBtn) undoBtn.addEventListener('click', onUndoClick);
+            syncBoxToScore();
             document.querySelectorAll('.podium-text-display').forEach(function (disp) {
                 var labelId = disp.getAttribute('data-for');
                 disp.textContent = boxContent[labelId] || '0';
@@ -293,6 +305,7 @@
             }
             clearScoresIfServerRestarted().then(function () {
                 initScoresToZero();
+                syncBoxToScore();
                 refreshHeaderScoreboard();
             });
             if (localStorage.getItem('jeopardy-final-revealed') === '1') {
