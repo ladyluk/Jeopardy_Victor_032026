@@ -47,6 +47,12 @@ body.teams {
 
 body.teams .gameboard-header {
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.teams-container .contestant-photo.contestant-1 {
+    z-index: 0;
 }
 
 .teams-main {
@@ -322,7 +328,7 @@ body.teams .gameboard-header {
 
 .teams-container .podium-jpg {
     position: relative;
-    z-index: 0;
+    z-index: -1;
 }
 
 .teams-container .podium-png {
