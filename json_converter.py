@@ -63,9 +63,10 @@ def convert_to_json():
                     elif category == "Jet-Setters":
                         result["categories"][round_name][category]["content"][row["Value"]]["Media_type"] = "image"
                         directory = Path("images/trip_pics")
+                        directory.mkdir(parents=True, exist_ok=True)
                         images = []
                         for i, file in enumerate(directory.iterdir()):
-                            if clue in file.name:
+                            if file.is_file() and clue in file.name:
                                 images.append(file.name)
                         result["categories"][round_name][category]["content"][row["Value"]]["image_src"] = images  
                         result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = ""

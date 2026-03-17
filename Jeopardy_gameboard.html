@@ -47,6 +47,7 @@
     <div id="clueModal" class="clue-modal" aria-hidden="true">
         <div class="clue-modal-content">
             <p id="clueModalText" class="clue-modal-text"></p>
+            <div id="clueModalImages" class="clue-modal-images" aria-hidden="true"></div>
             <div class="clue-modal-teams">
                 <div class="clue-modal-team" data-team="vic">
                     <img src="images/contestants/Vic.png" alt="Vic" class="clue-modal-team-img">
@@ -217,24 +218,55 @@
                     var dailyDoubleModal = document.getElementById('dailyDoubleModal');
                     var pendingClueAfterDailyDouble = null;
 
+                    var clueModalImages = document.getElementById('clueModalImages');
+                    var imageBasePath = '/images/trip_pics/';
+
                     function showClue(cell, categoryName, valueKey, isDailyDouble) {
                         var cat = roundData[categoryName];
                         var contentObj = cat && cat.content;
                         var item = contentObj && contentObj[valueKey];
-                        var text = item && (item.Clue !== undefined ? item.Clue : item.clue);
-                        if (modal && modalText && text !== undefined && text !== null) {
-                            activeClueCell = cell;
-                            currentClueValue = parseValue(valueKey);
-                            modalText.textContent = text;
-                            if (isDailyDouble) {
-                                modal.classList.add('clue-modal-daily-double');
-                                modal.querySelectorAll('.clue-modal-daily-double-input').forEach(function (input) { input.value = ''; });
-                            } else {
-                                modal.classList.remove('clue-modal-daily-double');
-                            }
-                            modal.classList.add('clue-modal-open');
-                            modal.setAttribute('aria-hidden', 'false');
+                        if (!modal || !item) return;
+                        activeClueCell = cell;
+                        currentClueValue = parseValue(valueKey);
+                        if (isDailyDouble) {
+                            modal.classList.add('clue-modal-daily-double');
+                            modal.querySelectorAll('.clue-modal-daily-double-input').forEach(function (input) { input.value = ''; });
+                        } else {
+                            modal.classList.remove('clue-modal-daily-double');
                         }
+                        var imageSrc = item.image_src;
+                        var isImageArray = Array.isArray(imageSrc) && imageSrc.length > 0;
+                        if (isImageArray) {
+                            if (modalText) {
+                                modalText.textContent = '';
+                                modalText.style.display = 'none';
+                            }
+                            if (clueModalImages) {
+                                clueModalImages.innerHTML = '';
+                                clueModalImages.setAttribute('aria-hidden', 'false');
+                                clueModalImages.style.display = 'flex';
+                                imageSrc.forEach(function (filename) {
+                                    var img = document.createElement('img');
+                                    img.src = imageBasePath + String(filename).trim();
+                                    img.alt = '';
+                                    img.className = 'clue-modal-image';
+                                    clueModalImages.appendChild(img);
+                                });
+                            }
+                        } else {
+                            var text = item.Clue !== undefined ? item.Clue : item.clue;
+                            if (modalText && text !== undefined && text !== null) {
+                                modalText.textContent = text;
+                                modalText.style.display = '';
+                            }
+                            if (clueModalImages) {
+                                clueModalImages.innerHTML = '';
+                                clueModalImages.setAttribute('aria-hidden', 'true');
+                                clueModalImages.style.display = 'none';
+                            }
+                        }
+                        modal.classList.add('clue-modal-open');
+                        modal.setAttribute('aria-hidden', 'false');
                     }
 
                     var dailyDoubleAudio = new Audio('audio/jeopardy-daily-double.mp3');
@@ -294,6 +326,12 @@
                         if (modal) {
                             modal.classList.remove('clue-modal-open', 'clue-modal-daily-double');
                             modal.setAttribute('aria-hidden', 'true');
+                        }
+                        if (modalText) modalText.style.display = '';
+                        if (clueModalImages) {
+                            clueModalImages.innerHTML = '';
+                            clueModalImages.setAttribute('aria-hidden', 'true');
+                            clueModalImages.style.display = 'none';
                         }
                     }
 
