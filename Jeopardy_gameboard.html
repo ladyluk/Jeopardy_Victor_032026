@@ -47,6 +47,7 @@
     <div id="clueModal" class="clue-modal" aria-hidden="true">
         <div class="clue-modal-content">
             <p id="clueModalText" class="clue-modal-text"></p>
+            <div id="clueModalVideo" class="clue-modal-video" aria-hidden="true"></div>
             <div id="clueModalImages" class="clue-modal-images" aria-hidden="true"></div>
             <div class="clue-modal-teams">
                 <div class="clue-modal-team" data-team="vic">
@@ -219,7 +220,17 @@
                     var pendingClueAfterDailyDouble = null;
 
                     var clueModalImages = document.getElementById('clueModalImages');
+                    var clueModalVideo = document.getElementById('clueModalVideo');
                     var imageBasePath = '/images/trip_pics/';
+
+                    function toEmbedVideoUrl(url) {
+                        if (!url || typeof url !== 'string') return '';
+                        var u = url.trim();
+                        var m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+                        if (m) return 'https://www.youtube.com/embed/' + m[1];
+                        if (u.indexOf('youtube.com/embed/') !== -1 || u.indexOf('vimeo.com/') !== -1) return u;
+                        return u;
+                    }
 
                     function showClue(cell, categoryName, valueKey, isDailyDouble) {
                         var cat = roundData[categoryName];
@@ -248,6 +259,29 @@
                             } else {
                                 modalText.textContent = '';
                                 modalText.style.display = 'none';
+                            }
+                        }
+                        var videoUrl = item.video_url;
+                        var hasVideo = videoUrl !== undefined && videoUrl !== null && String(videoUrl).trim() !== '';
+                        if (clueModalVideo) {
+                            clueModalVideo.innerHTML = '';
+                            if (hasVideo) {
+                                var embedUrl = toEmbedVideoUrl(videoUrl);
+                                if (embedUrl) {
+                                    var iframe = document.createElement('iframe');
+                                    iframe.src = embedUrl;
+                                    iframe.className = 'clue-modal-video-iframe';
+                                    iframe.setAttribute('title', 'Video clue');
+                                    clueModalVideo.appendChild(iframe);
+                                    clueModalVideo.setAttribute('aria-hidden', 'false');
+                                    clueModalVideo.style.display = 'block';
+                                } else {
+                                    clueModalVideo.setAttribute('aria-hidden', 'true');
+                                    clueModalVideo.style.display = 'none';
+                                }
+                            } else {
+                                clueModalVideo.setAttribute('aria-hidden', 'true');
+                                clueModalVideo.style.display = 'none';
                             }
                         }
                         if (clueModalImages) {
@@ -340,6 +374,11 @@
                             modal.setAttribute('aria-hidden', 'true');
                         }
                         if (modalText) modalText.style.display = '';
+                        if (clueModalVideo) {
+                            clueModalVideo.innerHTML = '';
+                            clueModalVideo.setAttribute('aria-hidden', 'true');
+                            clueModalVideo.style.display = 'none';
+                        }
                         if (clueModalImages) {
                             clueModalImages.innerHTML = '';
                             clueModalImages.setAttribute('aria-hidden', 'true');
