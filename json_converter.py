@@ -56,7 +56,7 @@ def convert_to_json():
                     result["categories"][round_name][category]["content"][row["Value"]] = content
                     if media_type == "image":
                         index_pos = clue.index('\n')
-                        src = clue[:index_pos]
+                        src = clue[:index_pos].strip().replace('\\', '/')
                         clue = clue[index_pos+1:]
                         result["categories"][round_name][category]["content"][row["Value"]]["image_src"] = src
                         result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = clue                        

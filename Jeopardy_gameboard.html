@@ -265,8 +265,9 @@
                                     });
                                 } else {
                                     var img = document.createElement('img');
-                                    var src = String(imageSrc).trim();
-                                    img.src = src.indexOf('/') === 0 || src.indexOf('http') === 0 ? src : '/' + src;
+                                    var src = String(imageSrc).trim().replace(/^["']|["']$/g, '').replace(/\\/g, '/');
+                                    if (src.indexOf('/') !== 0 && src.indexOf('http') !== 0 && src.indexOf('https') !== 0) src = '/' + src;
+                                    img.src = src;
                                     img.alt = '';
                                     img.className = 'clue-modal-image';
                                     clueModalImages.appendChild(img);
