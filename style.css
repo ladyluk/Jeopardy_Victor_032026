@@ -827,6 +827,20 @@ body.gameboard td.clue-cell:hover {
     background-color: #0a05b3;
 }
 
+.teams-iframe {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 10;
+}
+
+.teams-iframe.teams-iframe-visible {
+    display: block;
+}
+
 /* Same position as Begin button (main page) ΓÇô for e.g. Final page audio button */
 .bottom-right-btn {
     position: absolute;
