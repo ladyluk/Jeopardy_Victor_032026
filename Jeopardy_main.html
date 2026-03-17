@@ -6,6 +6,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <button type="button" class="reset-btn" id="reset-clues-btn">Reset</button>
     <a href="/teams" class="begin-btn">Begin</a>
+    <script>
+        document.getElementById('reset-clues-btn').addEventListener('click', function () {
+            try {
+                localStorage.removeItem('jeopardy-hidden-clues');
+            } catch (e) {}
+            alert('Board reset. All clue values will show again when you open the gameboard.');
+        });
+    </script>
 </body>
 </html>
