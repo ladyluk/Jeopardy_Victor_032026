@@ -234,33 +234,44 @@
                         } else {
                             modal.classList.remove('clue-modal-daily-double');
                         }
+                        var text = item.Clue !== undefined ? item.Clue : item.clue;
+                        var hasText = text !== undefined && text !== null && String(text).trim() !== '';
                         var imageSrc = item.image_src;
                         var isImageArray = Array.isArray(imageSrc) && imageSrc.length > 0;
-                        if (isImageArray) {
-                            if (modalText) {
+                        var isSingleImage = !isImageArray && imageSrc !== undefined && imageSrc !== null && String(imageSrc).trim() !== '';
+                        var hasImages = isImageArray || isSingleImage;
+
+                        if (modalText) {
+                            if (hasText) {
+                                modalText.textContent = text;
+                                modalText.style.display = '';
+                            } else {
                                 modalText.textContent = '';
                                 modalText.style.display = 'none';
                             }
-                            if (clueModalImages) {
-                                clueModalImages.innerHTML = '';
+                        }
+                        if (clueModalImages) {
+                            clueModalImages.innerHTML = '';
+                            if (hasImages) {
                                 clueModalImages.setAttribute('aria-hidden', 'false');
                                 clueModalImages.style.display = 'flex';
-                                imageSrc.forEach(function (filename) {
+                                if (isImageArray) {
+                                    imageSrc.forEach(function (filename) {
+                                        var img = document.createElement('img');
+                                        img.src = imageBasePath + String(filename).trim();
+                                        img.alt = '';
+                                        img.className = 'clue-modal-image';
+                                        clueModalImages.appendChild(img);
+                                    });
+                                } else {
                                     var img = document.createElement('img');
-                                    img.src = imageBasePath + String(filename).trim();
+                                    var src = String(imageSrc).trim();
+                                    img.src = src.indexOf('/') === 0 || src.indexOf('http') === 0 ? src : '/' + src;
                                     img.alt = '';
                                     img.className = 'clue-modal-image';
                                     clueModalImages.appendChild(img);
-                                });
-                            }
-                        } else {
-                            var text = item.Clue !== undefined ? item.Clue : item.clue;
-                            if (modalText && text !== undefined && text !== null) {
-                                modalText.textContent = text;
-                                modalText.style.display = '';
-                            }
-                            if (clueModalImages) {
-                                clueModalImages.innerHTML = '';
+                                }
+                            } else {
                                 clueModalImages.setAttribute('aria-hidden', 'true');
                                 clueModalImages.style.display = 'none';
                             }

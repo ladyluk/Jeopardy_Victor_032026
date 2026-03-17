@@ -5,11 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="main-page">
+    <div class="main-page-nav-wrap">
+        <button type="button" class="hamburger-btn" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
+        <nav id="main-nav" class="main-page-nav" aria-hidden="true">
+            <a href="/main" class="round-btn">Home</a>
+            <a href="/teams" class="round-btn">Teams</a>
+            <a href="/gameboard?round=jeopardy" class="round-btn">Jeopardy</a>
+            <a href="/gameboard?round=double" class="round-btn">Double Jeopardy</a>
+            <a href="/gameboard?round=vic" class="round-btn">Vic jeopardy</a>
+            <a href="/final" class="round-btn">Final Jeopardy</a>
+        </nav>
+    </div>
     <button type="button" class="reset-btn" id="reset-clues-btn">Reset</button>
     <a href="/teams" class="begin-btn" id="begin-btn">Begin</a>
     <iframe id="teams-iframe" class="teams-iframe" title="Teams"></iframe>
     <script>
+        document.getElementById('hamburger-btn').addEventListener('click', function () {
+            var nav = document.getElementById('main-nav');
+            var open = nav.getAttribute('aria-hidden') !== 'true';
+            nav.setAttribute('aria-hidden', open ? 'true' : 'false');
+            nav.classList.toggle('main-page-nav-open', !open);
+            this.setAttribute('aria-expanded', !open ? 'false' : 'true');
+            this.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
+        });
         document.getElementById('reset-clues-btn').addEventListener('click', function () {
             try {
                 localStorage.removeItem('jeopardy-hidden-clues');
@@ -24,6 +47,7 @@
                 var iframe = document.getElementById('teams-iframe');
                 iframe.src = '/teams';
                 iframe.classList.add('teams-iframe-visible');
+                document.querySelector('.main-page-nav-wrap').style.display = 'none';
                 document.getElementById('reset-clues-btn').style.visibility = 'hidden';
                 document.getElementById('begin-btn').style.visibility = 'hidden';
             }, 10000);

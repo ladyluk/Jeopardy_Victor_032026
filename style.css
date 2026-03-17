@@ -775,6 +775,73 @@ body.gameboard td.clue-cell:hover {
     pointer-events: none;
 }
 
+/* Main page only: hamburger top left, no header (not shown on iframe pages) */
+body.main-page {
+    position: relative;
+}
+
+.main-page-nav-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.main-page .hamburger-btn {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #06038d;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.main-page .hamburger-btn:hover {
+    background-color: #0a05b3;
+}
+
+.main-page .hamburger-bar {
+    display: block;
+    width: 1.25rem;
+    height: 3px;
+    background-color: #fff;
+    border-radius: 2px;
+}
+
+.main-page-nav {
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: absolute;
+    top: 100%;
+    left: 0.5rem;
+    margin-top: 0.25rem;
+    padding: 0.75rem;
+    background-color: #06038d;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 101;
+}
+
+.main-page-nav.main-page-nav-open {
+    display: flex;
+}
+
+.main-page-nav .round-btn {
+    min-width: 140px;
+    white-space: nowrap;
+}
+
 /* Begin button (main page) ΓÇô same size as .round-btn, different position */
 .begin-btn {
     box-sizing: border-box;
