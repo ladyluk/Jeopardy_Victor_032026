@@ -98,6 +98,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="clue-modal-5sec-wrap">
+                    <button type="button" id="clueModal5SecBtn" class="clue-modal-5sec-btn" aria-label="Start 5 second timer">5 sec</button>
+                    <span id="clueModal5SecDisplay" class="clue-modal-5sec-display" aria-live="polite"></span>
+                </div>
             </div>
             <button type="button" class="clue-modal-close" aria-label="Close">&times;</button>
         </div>
@@ -246,6 +250,8 @@
                     var clueModalAudioPlayBtn = document.getElementById('clueModalAudioPlayBtn');
                     var clueModalAudioPlayer = null;
                     var clueModalAudioStopTimeout = null;
+                    var clueModal5SecInterval = null;
+                    var clueModal5SecRemaining = 0;
                     var CLUE_AUDIO_MAX_SECONDS = 10;
                     var imageBasePath = '/images/trip_pics/';
 
@@ -479,6 +485,36 @@
                             clueModalImages.setAttribute('aria-hidden', 'true');
                             clueModalImages.style.display = 'none';
                         }
+                        if (clueModal5SecInterval) {
+                            clearInterval(clueModal5SecInterval);
+                            clueModal5SecInterval = null;
+                        }
+                        clueModal5SecRemaining = 0;
+                        var fiveSecDisplay = document.getElementById('clueModal5SecDisplay');
+                        if (fiveSecDisplay) fiveSecDisplay.textContent = '';
+                    }
+
+                    var fiveSecBtn = document.getElementById('clueModal5SecBtn');
+                    var fiveSecDisplay = document.getElementById('clueModal5SecDisplay');
+                    if (fiveSecBtn && fiveSecDisplay) {
+                        fiveSecBtn.addEventListener('click', function () {
+                            if (clueModal5SecInterval) {
+                                clearInterval(clueModal5SecInterval);
+                                clueModal5SecInterval = null;
+                            }
+                            clueModal5SecRemaining = 5;
+                            fiveSecDisplay.textContent = '5';
+                            clueModal5SecInterval = setInterval(function () {
+                                clueModal5SecRemaining -= 1;
+                                fiveSecDisplay.textContent = clueModal5SecRemaining > 0 ? String(clueModal5SecRemaining) : '';
+                                if (clueModal5SecRemaining <= 0) {
+                                    clearInterval(clueModal5SecInterval);
+                                    clueModal5SecInterval = null;
+                                    var timesUp = new Audio('/audio/times-up.mp3');
+                                    timesUp.play().catch(function () {});
+                                }
+                            }, 1000);
+                        });
                     }
 
                     var tbody = document.querySelector('body.gameboard table tbody');

@@ -668,6 +668,39 @@ body.gameboard td.clue-cell:hover {
     border-radius: 4px;
 }
 
+/* 5 second timer – to the right of team buttons in clue popup */
+.clue-modal-5sec-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.clue-modal-5sec-btn {
+    box-sizing: border-box;
+    padding: 0.4rem 0.75rem;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #06038d;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.clue-modal-5sec-btn:hover {
+    background-color: #0a05b3;
+}
+
+.clue-modal-5sec-display {
+    min-width: 2ch;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #d4a42d;
+}
+
 .clue-modal-close {
     position: absolute;
     top: 0.5rem;
