@@ -553,6 +553,7 @@ body.gameboard td {
 body.gameboard thead th {
     border-bottom-width: 8px;
     text-transform: uppercase;
+    text-align: center;
     color: white;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
@@ -614,6 +615,7 @@ body.gameboard td.clue-cell:hover {
     font-size: clamp(1rem, 4vmin, 2rem);
     line-height: 1.4;
     color: #fff;
+    text-align: center;
 }
 
 .clue-modal-audio {
