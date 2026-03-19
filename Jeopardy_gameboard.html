@@ -423,12 +423,43 @@
                         }
                     }
 
+                    function resetClue5SecTimerIdle() {
+                        var el = document.getElementById('clueModal5SecDisplay');
+                        if (clueModal5SecInterval) {
+                            clearInterval(clueModal5SecInterval);
+                            clueModal5SecInterval = null;
+                        }
+                        clueModal5SecRemaining = 0;
+                        if (el) el.textContent = '';
+                    }
+
+                    function restartClue5SecTimer() {
+                        var el = document.getElementById('clueModal5SecDisplay');
+                        if (!el) return;
+                        if (clueModal5SecInterval) {
+                            clearInterval(clueModal5SecInterval);
+                            clueModal5SecInterval = null;
+                        }
+                        clueModal5SecRemaining = 5;
+                        el.textContent = '5';
+                        clueModal5SecInterval = setInterval(function () {
+                            clueModal5SecRemaining -= 1;
+                            el.textContent = clueModal5SecRemaining > 0 ? String(clueModal5SecRemaining) : '';
+                            if (clueModal5SecRemaining <= 0) {
+                                clearInterval(clueModal5SecInterval);
+                                clueModal5SecInterval = null;
+                                var timesUp = new Audio('/audio/times-up.mp3');
+                                timesUp.play().catch(function () {});
+                            }
+                        }, 1000);
+                    }
+
                     modal && modal.querySelectorAll('.clue-modal-team').forEach(function (wrap) {
                         var team = wrap.getAttribute('data-team');
-                        var winBtn = wrap.querySelector('.clue-modal-btn-win');
-                        var loseBtn = wrap.querySelector('.clue-modal-btn-lose');
+                        var winBtn = wrap.querySelector('.clue-modal-buttons .clue-modal-btn-win');
+                        var loseBtn = wrap.querySelector('.clue-modal-buttons .clue-modal-btn-lose');
                         if (winBtn) winBtn.addEventListener('click', function () { updateScoreboard(team, currentClueValue); hideClue(); });
-                        if (loseBtn) loseBtn.addEventListener('click', function () { updateScoreboard(team, -currentClueValue); });
+                        if (loseBtn) loseBtn.addEventListener('click', function () { resetClue5SecTimerIdle(); updateScoreboard(team, -currentClueValue); });
                         var ddWrap = wrap.querySelector('.clue-modal-daily-double-wrap');
                         if (ddWrap) {
                             var input = ddWrap.querySelector('.clue-modal-daily-double-input');
@@ -439,8 +470,8 @@
                                 var n = parseInt(raw, 10);
                                 return isNaN(n) ? 0 : n;
                             }
-                            if (minusBtn) minusBtn.addEventListener('click', function () { updateScoreboard(team, -parseInputValue()); });
-                            if (plusBtn) plusBtn.addEventListener('click', function () { updateScoreboard(team, parseInputValue()); });
+                            if (minusBtn) minusBtn.addEventListener('click', function () { resetClue5SecTimerIdle(); updateScoreboard(team, -parseInputValue()); });
+                            if (plusBtn) plusBtn.addEventListener('click', function () { restartClue5SecTimer(); updateScoreboard(team, parseInputValue()); });
                         }
                     });
 
@@ -495,26 +526,8 @@
                     }
 
                     var fiveSecBtn = document.getElementById('clueModal5SecBtn');
-                    var fiveSecDisplay = document.getElementById('clueModal5SecDisplay');
-                    if (fiveSecBtn && fiveSecDisplay) {
-                        fiveSecBtn.addEventListener('click', function () {
-                            if (clueModal5SecInterval) {
-                                clearInterval(clueModal5SecInterval);
-                                clueModal5SecInterval = null;
-                            }
-                            clueModal5SecRemaining = 5;
-                            fiveSecDisplay.textContent = '5';
-                            clueModal5SecInterval = setInterval(function () {
-                                clueModal5SecRemaining -= 1;
-                                fiveSecDisplay.textContent = clueModal5SecRemaining > 0 ? String(clueModal5SecRemaining) : '';
-                                if (clueModal5SecRemaining <= 0) {
-                                    clearInterval(clueModal5SecInterval);
-                                    clueModal5SecInterval = null;
-                                    var timesUp = new Audio('/audio/times-up.mp3');
-                                    timesUp.play().catch(function () {});
-                                }
-                            }, 1000);
-                        });
+                    if (fiveSecBtn) {
+                        fiveSecBtn.addEventListener('click', function () { restartClue5SecTimer(); });
                     }
 
                     var tbody = document.querySelector('body.gameboard table tbody');
