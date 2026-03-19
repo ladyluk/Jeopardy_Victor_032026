@@ -47,6 +47,11 @@
     <div id="clueModal" class="clue-modal" aria-hidden="true">
         <div class="clue-modal-content">
             <p id="clueModalText" class="clue-modal-text"></p>
+            <div id="clueModalAudio" class="clue-modal-audio" aria-hidden="true">
+                <div class="final-timer-wrap clue-modal-audio-pill">
+                    <button type="button" id="clueModalAudioPlayBtn" class="final-timer-play-btn" aria-label="Play">&#9654;</button>
+                </div>
+            </div>
             <div id="clueModalVideo" class="clue-modal-video" aria-hidden="true"></div>
             <div id="clueModalImages" class="clue-modal-images" aria-hidden="true"></div>
             <div class="clue-modal-teams">
@@ -221,6 +226,11 @@
 
                     var clueModalImages = document.getElementById('clueModalImages');
                     var clueModalVideo = document.getElementById('clueModalVideo');
+                    var clueModalAudio = document.getElementById('clueModalAudio');
+                    var clueModalAudioPlayBtn = document.getElementById('clueModalAudioPlayBtn');
+                    var clueModalAudioPlayer = null;
+                    var clueModalAudioStopTimeout = null;
+                    var CLUE_AUDIO_MAX_SECONDS = 10;
                     var imageBasePath = '/images/trip_pics/';
 
                     function toEmbedVideoUrl(url) {
@@ -259,6 +269,27 @@
                             } else {
                                 modalText.textContent = '';
                                 modalText.style.display = 'none';
+                            }
+                        }
+                        var audioFileName = item.audio_file_name;
+                        var hasAudio = audioFileName !== undefined && audioFileName !== null && String(audioFileName).trim() !== '';
+                        if (clueModalAudio && clueModalAudioPlayBtn) {
+                            if (clueModalAudioPlayer) {
+                                clueModalAudioPlayer.pause();
+                                clueModalAudioPlayer = null;
+                            }
+                            if (hasAudio) {
+                                var audioSrc = String(audioFileName).trim();
+                                if (audioSrc.indexOf('/') !== 0) audioSrc = '/' + audioSrc;
+                                clueModalAudioPlayer = new Audio(audioSrc);
+                                clueModalAudioPlayer.addEventListener('ended', onClueAudioEnded);
+                                clueModalAudioPlayBtn.textContent = '\u25B6';
+                                clueModalAudioPlayBtn.setAttribute('aria-label', 'Play');
+                                clueModalAudio.setAttribute('aria-hidden', 'false');
+                                clueModalAudio.style.display = 'block';
+                            } else {
+                                clueModalAudio.setAttribute('aria-hidden', 'true');
+                                clueModalAudio.style.display = 'none';
                             }
                         }
                         var videoUrl = item.video_url;
@@ -313,6 +344,39 @@
                         }
                         modal.classList.add('clue-modal-open');
                         modal.setAttribute('aria-hidden', 'false');
+                    }
+
+                    if (clueModalAudioPlayBtn) {
+                        clueModalAudioPlayBtn.addEventListener('click', function () {
+                            if (!clueModalAudioPlayer) return;
+                            if (clueModalAudioPlayer.paused) {
+                                if (clueModalAudioStopTimeout) clearTimeout(clueModalAudioStopTimeout);
+                                clueModalAudioPlayer.currentTime = 0;
+                                clueModalAudioPlayer.play();
+                                clueModalAudioPlayBtn.textContent = '\u23F8';
+                                clueModalAudioPlayBtn.setAttribute('aria-label', 'Pause');
+                                clueModalAudioStopTimeout = setTimeout(function () {
+                                    clueModalAudioStopTimeout = null;
+                                    clueModalAudioPlayer.pause();
+                                    clueModalAudioPlayBtn.textContent = '\u25B6';
+                                    clueModalAudioPlayBtn.setAttribute('aria-label', 'Play');
+                                }, CLUE_AUDIO_MAX_SECONDS * 1000);
+                            } else {
+                                if (clueModalAudioStopTimeout) {
+                                    clearTimeout(clueModalAudioStopTimeout);
+                                    clueModalAudioStopTimeout = null;
+                                }
+                                clueModalAudioPlayer.pause();
+                                clueModalAudioPlayBtn.textContent = '\u25B6';
+                                clueModalAudioPlayBtn.setAttribute('aria-label', 'Play');
+                            }
+                        });
+                    }
+                    function onClueAudioEnded() {
+                        if (clueModalAudioPlayBtn) {
+                                clueModalAudioPlayBtn.textContent = '\u25B6';
+                                clueModalAudioPlayBtn.setAttribute('aria-label', 'Play');
+                        }
                     }
 
                     var dailyDoubleAudio = new Audio('audio/jeopardy-daily-double.mp3');
@@ -374,6 +438,18 @@
                             modal.setAttribute('aria-hidden', 'true');
                         }
                         if (modalText) modalText.style.display = '';
+                        if (clueModalAudioStopTimeout) {
+                            clearTimeout(clueModalAudioStopTimeout);
+                            clueModalAudioStopTimeout = null;
+                        }
+                        if (clueModalAudioPlayer) {
+                            clueModalAudioPlayer.pause();
+                            clueModalAudioPlayer = null;
+                        }
+                        if (clueModalAudio) {
+                            clueModalAudio.setAttribute('aria-hidden', 'true');
+                            clueModalAudio.style.display = 'none';
+                        }
                         if (clueModalVideo) {
                             clueModalVideo.innerHTML = '';
                             clueModalVideo.setAttribute('aria-hidden', 'true');

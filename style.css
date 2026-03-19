@@ -587,6 +587,17 @@ body.gameboard td.clue-cell:hover {
     color: #fff;
 }
 
+.clue-modal-audio {
+    display: none;
+    margin: 1rem 0 0 0;
+}
+
+.clue-modal-audio .clue-modal-audio-pill {
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+}
+
 .clue-modal-video {
     display: none;
     margin: 1rem 0 0 0;
