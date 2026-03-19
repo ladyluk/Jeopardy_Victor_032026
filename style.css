@@ -668,37 +668,103 @@ body.gameboard td.clue-cell:hover {
     border-radius: 4px;
 }
 
-/* 5 second timer – to the right of team buttons in clue popup */
+/* 5 second timer – clock button (white → red sweep + hand) */
 .clue-modal-5sec-wrap {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     margin-left: auto;
 }
 
 .clue-modal-5sec-btn {
+    --clock-p: 0;
+    position: relative;
     box-sizing: border-box;
-    padding: 0.4rem 0.75rem;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #06038d;
-    border: 2px solid #fff;
-    border-radius: 4px;
+    width: 3.75rem;
+    height: 3.75rem;
+    padding: 0;
+    margin: 0;
+    border: 3px solid #fff;
+    border-radius: 50%;
     cursor: pointer;
+    background: transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    flex-shrink: 0;
 }
 
 .clue-modal-5sec-btn:hover {
-    background-color: #0a05b3;
+    box-shadow: 0 2px 12px rgba(255, 255, 255, 0.35);
+}
+
+.clue-modal-5sec-btn:focus-visible {
+    outline: 2px solid #d4a42d;
+    outline-offset: 2px;
+}
+
+.clue-modal-5sec-dial {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+        from -90deg,
+        #b71c1c 0deg,
+        #b71c1c calc(var(--clock-p) * 360deg),
+        #ffffff calc(var(--clock-p) * 360deg),
+        #ffffff 360deg
+    );
+    pointer-events: none;
+}
+
+.clue-modal-5sec-hand {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    width: 3px;
+    height: 38%;
+    margin-left: 0;
+    background: #1a1a1a;
+    border-radius: 2px;
+    transform-origin: 50% 100%;
+    transform: translateX(-50%) rotate(0deg);
+    pointer-events: none;
+    z-index: 1;
+    box-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
 }
 
 .clue-modal-5sec-display {
-    min-width: 2ch;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.25rem;
+    font-size: clamp(1.1rem, 3.5vmin, 1.35rem);
     font-weight: bold;
-    color: #d4a42d;
+    color: #1a1a1a;
+    text-shadow: 0 0 2px #fff, 0 0 4px #fff;
+    pointer-events: none;
+    line-height: 1;
+}
+
+.clue-modal-5sec-idle-label {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    color: #1a1a1a;
+    text-shadow: 0 0 2px #fff, 0 0 4px #fff;
+    line-height: 1.1;
+    text-align: center;
+    max-width: 90%;
+    pointer-events: none;
+}
+
+.clue-modal-5sec-btn.clue-modal-5sec-running .clue-modal-5sec-idle-label {
+    display: none;
 }
 
 .clue-modal-close {
