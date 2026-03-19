@@ -29,6 +29,7 @@
             <a href="?round=vic" class="round-btn">Vic jeopardy</a>
             <a href="/final" class="round-btn">Final Jeopardy</a>
         </div>
+        <button type="button" id="gameboard-undo-clue-btn" class="gameboard-header-undo-btn" aria-label="Restore last clue">Undo</button>
     </header>
     <table>
         <thead>
@@ -128,6 +129,7 @@
                     localStorage.removeItem('jeopardy-hidden-clues');
                     localStorage.setItem('jeopardy-boot-id', bootData.boot_id);
                 }
+                var clueUndoStack = [];
                 function getHiddenClues() {
                     try {
                         var raw = localStorage.getItem('jeopardy-hidden-clues');
@@ -142,6 +144,14 @@
                 }
                 function isClueHidden(roundKey, categoryName, valueKey) {
                     return getHiddenClues().indexOf(roundKey + '|' + categoryName + '|' + valueKey) !== -1;
+                }
+                function removeHiddenClueByKey(key) {
+                    var arr = getHiddenClues();
+                    var i = arr.indexOf(key);
+                    if (i === -1) return false;
+                    arr.splice(i, 1);
+                    localStorage.setItem('jeopardy-hidden-clues', JSON.stringify(arr));
+                    return true;
                 }
                 var roundData = data.categories && data.categories[roundKey];
                 if (!roundData) return;
@@ -165,26 +175,32 @@
                         return keys;
                     });
 
-                    for (var r = 0; r < rows.length; r++) {
-                        var cells = rows[r].querySelectorAll('td');
-                        for (var c = 0; c < categoryNames.length; c++) {
-                            var valueKeys = valueKeysByCol[c];
-                            var valueKey = (r < valueKeys.length) ? valueKeys[r] : null;
-                            if (cells[c]) {
-                                var catName = categoryNames[c];
-                                var hidden = valueKey && isClueHidden(roundKey, catName, valueKey);
-                                cells[c].textContent = hidden ? '' : (valueKey || '');
-                                if (valueKey && !hidden) {
-                                    cells[c].classList.add('clue-cell');
-                                    cells[c].setAttribute('data-category', catName);
-                                    cells[c].setAttribute('data-value', valueKey);
+                    function refreshGameboardCells() {
+                        for (var r = 0; r < rows.length; r++) {
+                            var cells = rows[r].querySelectorAll('td');
+                            for (var c = 0; c < categoryNames.length; c++) {
+                                var valueKeys = valueKeysByCol[c];
+                                var valueKey = (r < valueKeys.length) ? valueKeys[r] : null;
+                                if (cells[c]) {
+                                    var catName = categoryNames[c];
+                                    var hidden = valueKey && isClueHidden(roundKey, catName, valueKey);
+                                    cells[c].textContent = hidden ? '' : (valueKey || '');
+                                    cells[c].classList.remove('clue-cell');
+                                    cells[c].removeAttribute('data-category');
+                                    cells[c].removeAttribute('data-value');
+                                    if (valueKey && !hidden) {
+                                        cells[c].classList.add('clue-cell');
+                                        cells[c].setAttribute('data-category', catName);
+                                        cells[c].setAttribute('data-value', valueKey);
+                                    }
                                 }
                             }
-                        }
-                        for (var c = categoryNames.length; c < cells.length; c++) {
-                            if (cells[c]) cells[c].textContent = '';
+                            for (var c = categoryNames.length; c < cells.length; c++) {
+                                if (cells[c]) cells[c].textContent = '';
+                            }
                         }
                     }
+                    refreshGameboardCells();
 
                     var modal = document.getElementById('clueModal');
                     var modalText = document.getElementById('clueModalText');
@@ -426,7 +442,10 @@
                         if (activeClueCell) {
                             var cat = activeClueCell.getAttribute('data-category');
                             var val = activeClueCell.getAttribute('data-value');
-                            if (cat && val) addHiddenClue(roundKey, cat, val);
+                            if (cat && val) {
+                                addHiddenClue(roundKey, cat, val);
+                                clueUndoStack.push(roundKey + '|' + cat + '|' + val);
+                            }
                             activeClueCell.textContent = '';
                             activeClueCell.classList.remove('clue-cell');
                             activeClueCell.removeAttribute('data-category');
@@ -462,8 +481,11 @@
                         }
                     }
 
-                    document.querySelectorAll('body.gameboard td.clue-cell').forEach(function (cell) {
-                        cell.addEventListener('click', function () {
+                    var tbody = document.querySelector('body.gameboard table tbody');
+                    if (tbody) {
+                        tbody.addEventListener('click', function (e) {
+                            var cell = e.target.closest('td');
+                            if (!cell || !cell.classList.contains('clue-cell')) return;
                             var cat = cell.getAttribute('data-category');
                             var val = cell.getAttribute('data-value');
                             if (!cat || !val) return;
@@ -474,7 +496,17 @@
                             if (isDailyDouble) showDailyDoubleThenClue(cell, cat, val);
                             else showClue(cell, cat, val);
                         });
-                    });
+                    }
+
+                    var undoClueBtn = document.getElementById('gameboard-undo-clue-btn');
+                    if (undoClueBtn) {
+                        undoClueBtn.addEventListener('click', function () {
+                            if (!clueUndoStack.length) return;
+                            var key = clueUndoStack.pop();
+                            removeHiddenClueByKey(key);
+                            refreshGameboardCells();
+                        });
+                    }
 
                     if (dailyDoubleModal) dailyDoubleModal.addEventListener('click', hideDailyDoubleAndShowClue);
 

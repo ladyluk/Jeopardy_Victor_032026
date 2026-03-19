@@ -467,6 +467,35 @@ body.gameboard .gameboard-header {
     gap: 0.5rem;
 }
 
+/* Bottom-right of header: restore last cleared clue value */
+.gameboard-header-undo-btn {
+    position: absolute;
+    bottom: 0.35rem;
+    right: 0.5rem;
+    z-index: 2;
+    box-sizing: border-box;
+    min-width: 100px;
+    min-height: 36px;
+    padding: 6px 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.2;
+    color: #fff;
+    background-color: #06038d;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.gameboard-header-undo-btn:hover {
+    background-color: #0a0cb8;
+}
+
+.gameboard-header-undo-btn:active {
+    transform: scale(0.98);
+}
+
 .round-btn {
     box-sizing: border-box;
     display: inline-block;
