@@ -36,8 +36,11 @@
         document.getElementById('reset-clues-btn').addEventListener('click', function () {
             try {
                 localStorage.removeItem('jeopardy-hidden-clues');
+                ['vic', 'skittles', 'maverick'].forEach(function (team) {
+                    localStorage.setItem('jeopardy-score-' + team, '0');
+                });
             } catch (e) {}
-            alert('Board reset. All clue values will show again when you open the gameboard.');
+            alert('Board and scores reset. Clue values will show again on the gameboard; all team scores are $0.');
         });
         document.getElementById('begin-btn').addEventListener('click', function (e) {
             e.preventDefault();
