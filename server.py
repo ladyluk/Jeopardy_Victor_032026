@@ -34,6 +34,10 @@ def images(filename):
 def audio(filename):
     return send_from_directory('audio', filename)
 
+@app.route('/video/<path:filename>')
+def video(filename):
+    return send_from_directory('video', filename)
+
 @app.route('/answers.json')
 def answers_json():
     return send_file('answers.json', mimetype='application/json')

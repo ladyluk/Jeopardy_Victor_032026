@@ -317,23 +317,40 @@
                                 clueModalAudio.style.display = 'none';
                             }
                         }
+                        var videoFileName = item.video_file_name;
                         var videoUrl = item.video_url;
-                        var hasVideo = videoUrl !== undefined && videoUrl !== null && String(videoUrl).trim() !== '';
+                        var hasLocalVideo = videoFileName !== undefined && videoFileName !== null && String(videoFileName).trim() !== '';
+                        var hasEmbedVideo = videoUrl !== undefined && videoUrl !== null && String(videoUrl).trim() !== '';
+                        var hasVideo = hasLocalVideo || hasEmbedVideo;
                         if (clueModalVideo) {
                             clueModalVideo.innerHTML = '';
                             if (hasVideo) {
-                                var embedUrl = toEmbedVideoUrl(videoUrl);
-                                if (embedUrl) {
-                                    var iframe = document.createElement('iframe');
-                                    iframe.src = embedUrl;
-                                    iframe.className = 'clue-modal-video-iframe';
-                                    iframe.setAttribute('title', 'Video clue');
-                                    clueModalVideo.appendChild(iframe);
+                                if (hasLocalVideo) {
+                                    var base = String(videoFileName).trim().replace(/\\/g, '/').split('/').pop();
+                                    var localSrc = '/video/' + encodeURIComponent(base);
+                                    var videoEl = document.createElement('video');
+                                    videoEl.className = 'clue-modal-video-file';
+                                    videoEl.setAttribute('controls', '');
+                                    videoEl.setAttribute('playsinline', '');
+                                    videoEl.setAttribute('title', 'Video clue');
+                                    videoEl.src = localSrc;
+                                    clueModalVideo.appendChild(videoEl);
                                     clueModalVideo.setAttribute('aria-hidden', 'false');
                                     clueModalVideo.style.display = 'block';
                                 } else {
-                                    clueModalVideo.setAttribute('aria-hidden', 'true');
-                                    clueModalVideo.style.display = 'none';
+                                    var embedUrl = toEmbedVideoUrl(videoUrl);
+                                    if (embedUrl) {
+                                        var iframe = document.createElement('iframe');
+                                        iframe.src = embedUrl;
+                                        iframe.className = 'clue-modal-video-iframe';
+                                        iframe.setAttribute('title', 'Video clue');
+                                        clueModalVideo.appendChild(iframe);
+                                        clueModalVideo.setAttribute('aria-hidden', 'false');
+                                        clueModalVideo.style.display = 'block';
+                                    } else {
+                                        clueModalVideo.setAttribute('aria-hidden', 'true');
+                                        clueModalVideo.style.display = 'none';
+                                    }
                                 }
                             } else {
                                 clueModalVideo.setAttribute('aria-hidden', 'true');

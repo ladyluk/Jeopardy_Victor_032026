@@ -78,7 +78,7 @@ def convert_to_json():
                         src = clue
                         clue = label
                         result["categories"][round_name][category]["content"][row["Value"]]["Media_type"] = "video"   
-                        result["categories"][round_name][category]["content"][row["Value"]]["video_url"] = src
+                        result["categories"][round_name][category]["content"][row["Value"]]["video_file_name"] = f"videos/{src}.mp4"
                         result["categories"][round_name][category]["content"][row["Value"]]["Clue"] = clue                        
                     else:
                         result["categories"][round_name][category]["content"][row["Value"]]["Clue"]  = clue                        
